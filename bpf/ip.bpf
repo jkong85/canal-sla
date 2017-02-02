@@ -1,0 +1,5 @@
+    ldh      [12] 
+    jeq      #0x800, fail
+    ret      #262144
+    fail:
+    ret      #0
