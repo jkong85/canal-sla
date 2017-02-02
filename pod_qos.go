@@ -76,17 +76,18 @@ func main() {
 
 	//Firstly, get the VM's ip address
 	vm_ip = get_intf_ipaddress(node_dev)
-	//test_ip := "10.145.240.154"
-	//node_ip := net.ParseIP(pod_qos[test_ip].NodeIP)
-	//// check whether the same ip
-	//if vm_ip.Equal(node_ip) {
-	//	fmt.Println("That's it, the correct VM")
-	//}
 
 	load_pod_qos_policy_test()
 }
 
 func test() {
+	//get container pid
+	cmd := "docker"
+	container_id := "33ec83192b19"
+	args := []string{"inspect", "-f", "{{.State.Pid}}", container_id}
+	container_pid := strings.Trim(exe_cmd(cmd, args), "\n")
+	fmt.Println("pid is:", container_pid)
+
 	ipaddr := get_intf_ipaddress("ens3")
 	fmt.Println("ip address is : ", ipaddr)
 }
@@ -291,11 +292,12 @@ func parse_qos_info_test() map[string]qos_para {
 
 		map[string]string{"NodeIP": "10.145.240.154", "PodID": "3", "VlanID": "1", "VxlanID": "1", "PodIP": "10.1.2.5", "Action": "add", "InBandWidthMin": "10", "InBandWidthMax": "100", "OutBandWidthMin": "10", "OutBandWidthMax": "100", "PodPriority": "5"},
 
-		map[string]string{"NodeIP": "10.145.240.154", "PodID": "4", "VlanID": "1", "VxlanID": "1", "PodIP": "10.1.2.7", "Action": "add", "InBandWidthMin": "10", "InBandWidthMax": "100", "OutBandWidthMin": "10", "OutBandWidthMax": "100", "PodPriority": "5"},
+		//map[string]string{"NodeIP": "10.145.240.154", "PodID": "4", "VlanID": "1", "VxlanID": "1", "PodIP": "10.1.2.7", "Action": "add", "InBandWidthMin": "10", "InBandWidthMax": "100", "OutBandWidthMin": "10", "OutBandWidthMax": "100", "PodPriority": "5"},
 
-		map[string]string{"NodeIP": "10.145.240.154", "PodID": "5", "VlanID": "1", "VxlanID": "1", "PodIP": "10.1.2.9", "Action": "add", "InBandWidthMin": "10", "InBandWidthMax": "100", "OutBandWidthMin": "10", "OutBandWidthMax": "100", "PodPriority": "5"},
+		//map[string]string{"NodeIP": "10.145.240.154", "PodID": "5", "VlanID": "1", "VxlanID": "1", "PodIP": "10.1.2.9", "Action": "add", "InBandWidthMin": "10", "InBandWidthMax": "100", "OutBandWidthMin": "10", "OutBandWidthMax": "100", "PodPriority": "5"},
 
-		map[string]string{"NodeIP": "10.145.240.154", "PodID": "5", "VlanID": "1", "VxlanID": "1", "PodIP": "10.1.2.11", "Action": "add", "InBandWidthMin": "10", "InBandWidthMax": "100", "OutBandWidthMin": "10", "OutBandWidthMax": "100", "PodPriority": "5"},
+		//map[string]string{"NodeIP": "10.145.240.154", "PodID": "5", "VlanID": "1", "VxlanID": "1", "PodIP": "10.1.2.11", "Action": "add", "InBandWidthMin": "10", "InBandWidthMax": "100", "OutBandWidthMin": "10", "OutBandWidthMax": "100", "PodPriority": "5"},
+
 		//{"default": {"10.145.240.154", "1", "100", "1", "default", "add", "10", "100", "10", "100", "5"}},
 		//{"10.1.2.5": {"10.145.240.154", "1", "100", "1", "10.1.2.5", "add", "500", "500", "700", "700", "0"}},
 		//{"10.1.2.7": {"10.145.240.154", "1", "102", "1", "10.1.2.7", "add", "200", "200", "200", "200", "5"}},
@@ -1174,9 +1176,19 @@ func set_vm_outbound_bandwidth_class_and_filter(intf_name string, pod_qos map[st
 			//set tc filter for each pod on br_int
 			//tc filter add dev $nic parent 1:1 protocol ip prio 0 u32 match ip dst 10.0.3.153/32 flowid 1:2
 			//println(classid, cur_classid)
+
+			//cmd = "tc"
+			//args = []string{"filter", "add", "dev", intf_name, "parent", htb_root_classid, "protocol", "ip",
+			//	"prio", "0", "u32", "match", "ip", "dst", ip + "/32", "flowid", cur_classid}
+			//exe_cmd(cmd, args)
+
+			// for Vxlan with dst address : 10.1.2.6
+			//sudo tc filter add dev ens3 parent 1:0 prio 0 bpf bytecode "11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 167838213,6 0 0 262144,6 0 0 0," flowi d 1:20
+			bytecode := generate_bytecode(ip)
+
 			cmd = "tc"
-			args = []string{"filter", "add", "dev", intf_name, "parent", htb_root_classid, "protocol", "ip",
-				"prio", "0", "u32", "match", "ip", "dst", ip + "/32", "flowid", cur_classid}
+			args = []string{"filter", "add", "dev", intf_name, "parent", htb_root_classid, "prio", prio, "bpf", "bytecode", bytecode,
+				"flowid", cur_classid}
 			exe_cmd(cmd, args)
 
 			//get filter pref,
@@ -1217,7 +1229,7 @@ func set_vm_outbound_bandwidth_class_and_filter(intf_name string, pod_qos map[st
 				//println("Delete pod filter on",cur_classid, intf_name, ip, pref)
 
 				cmd := "tc"
-				args := []string{"filter", "del", "dev", intf_name, "parent", htb_root_classid, "prio", pref, "u32"}
+				args := []string{"filter", "del", "dev", intf_name, "parent", htb_root_classid, "prio", pref}
 
 				exe_cmd(cmd, args)
 
@@ -1263,6 +1275,26 @@ func set_vm_outbound_bandwidth_class_and_filter(intf_name string, pod_qos map[st
 	}
 
 	//return classid_pool
+}
+func generate_bytecode(ip string) string {
+	fmt.Println("current IP: ", ip)
+	//sudo tc filter add dev ens3 parent 1:0 bpf bytecode "11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 167838213,6 0 0 262144,6 0 0 0," flowi d 1:20
+	part1 := "11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 "
+	var temp int64
+	for _, value := range strings.Split(ip, ".") {
+		temp = temp << 8
+		i, err := strconv.Atoi(value)
+		fmt.Println("value: ", i)
+		if err != nil {
+			log.Fatal("Error in Atoi ")
+		}
+		temp = temp + int64(i)
+	}
+	part2 := strconv.FormatInt(temp, 10)
+	part3 := ",6 0 0 262144,6 0 0 0,"
+	bc := part1 + part2 + part3
+	fmt.Println("bytecode is: ", bc)
+	return bc
 }
 
 //get veth list on the host
@@ -1324,8 +1356,9 @@ func get_intf_ipaddress(intf_name string) net.IP {
 
 func exe_cmd(cmd string, args []string) string {
 
-	//fmt.Println("command is ", cmd, " ", args)
+	fmt.Println("command is ", cmd, " ", args)
 
+	//out, err := exec.Command(cmd, args...).Output()
 	out, err := exec.Command(cmd, args...).Output()
 
 	if err != nil {
