@@ -1,0 +1,49 @@
+IP net is:  10.145.240.154
+Pod ip: all
+Node id: 10.145.240.154
+Pod ip: default
+Node id: 10.145.240.154
+Pod ip: 10.1.2.3
+Node id: 10.145.240.154
+Pod ip: 10.1.2.5
+Node id: 10.145.240.154
+Pod ip: 10.1.2.7
+Node id: 10.145.240.154
+pod_qosmap[all:{10.145.240.154 1 1 1 all add 10 100 10 100 5 0} default:{10.145.240.154 2 1 1 default add 10 100 10 100 5 0} 10.1.2.3:{10.145.240.154 3 1 1 10.1.2.3 add 3 30 3 30 5 0} 10.1.2.5:{10.145.240.154 3 1 1 10.1.2.5 add 5 50 5 50 5 0} 10.1.2.7:{10.145.240.154 4 1 1 10.1.2.7 add 7 70 7 70 5 0}]
+command is  docker   [ps -q]
+command is  docker   [inspect -f {{.State.Pid}} defb37df89e7]
+command is  nsenter   [-t 12990 -n ifconfig eth0]
+command is  docker   [inspect -f {{.State.Pid}} 72548ee6c03e]
+command is  nsenter   [-t 12191 -n ifconfig eth0]
+command is  docker   [inspect -f {{.State.Pid}} 33ec83192b19]
+command is  nsenter   [-t 26932 -n ifconfig eth0]
+ -- end of get pod info map
+--- end of set pod eth outbound
+--- end of set pod veth inbound
+--- end of set br inbound
+command is  tc   [qdisc del dev ens3 root]
+exec cmd error: exit status 2
+command is  tc   [qdisc add dev ens3 root handle 1: htb default 8001]
+command is  tc   [class add dev ens3 parent 1: classid 1:1 htb rate 100mbit ceil 100mbit]
+command is  tc   [class add dev ens3 parent 1:1 classid 1:8001 htb rate 10mbit ceil 100mbit]
+That's it, the correct VM
+command is  tc   [class add dev ens3 parent 1:1 classid 1:102 htb rate 3mbit ceil 30mbit prio 5]
+CMD is :  tc filter add dev ens3 parent 1: prio 5 bpf bytecode "11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 167838211,6 0 0 262144,6 0 0 0," flowid 1:102
+Output of CMD : 
+command is  tc   [filter show dev ens3 parent 1:1]
+That's it, the correct VM
+command is  tc   [class add dev ens3 parent 1:1 classid 1:101 htb rate 5mbit ceil 50mbit prio 5]
+CMD is :  tc filter add dev ens3 parent 1: prio 5 bpf bytecode "11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 167838213,6 0 0 262144,6 0 0 0," flowid 1:101
+Output of CMD : 
+command is  tc   [filter show dev ens3 parent 1:1]
+That's it, the correct VM
+command is  tc   [class add dev ens3 parent 1:1 classid 1:100 htb rate 7mbit ceil 70mbit prio 5]
+CMD is :  tc filter add dev ens3 parent 1: prio 5 bpf bytecode "11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 167838215,6 0 0 262144,6 0 0 0," flowid 1:100
+Output of CMD : 
+command is  tc   [filter show dev ens3 parent 1:1]
+command is  tc   [qdisc show dev ens3]
+command is  tc   [class show dev ens3]
+command is  tc   [filter show dev ens3 parent 1:]
+command is  tc   [filter show dev ens3 parent 1:1]
+--- end of set VM outbound
+update pod qos : update time 0|118|0|0|0|43|161 

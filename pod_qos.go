@@ -15,6 +15,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	// added by Jian for log
 )
 
 const (
@@ -154,7 +155,7 @@ func load_pod_qos_policy_test() {
 	fmt.Println("--- end of set br inbound")
 
 	t5 := time.Now().UnixNano() / 1000000
-	set_vm_outbound_bandwidth(node_dev, pod_qos, pod_info_map)
+	Set_vm_outbound_bandwidth(node_dev, pod_qos, pod_info_map)
 	fmt.Println("--- end of set VM outbound")
 
 	pod_info_map, cid_pid_map = delete_pod_info_map(pod_qos, pod_info_map, cid_pid_map)
@@ -1019,81 +1020,70 @@ func set_pod_eth_outbound_bandwidth(pod_qos map[string]qos_para, pod_info_map ma
 
 }
 
-func set_vm_outbound_bandwidth(intf_name string, pod_qos map[string]qos_para, pod_info_map map[string]pod_metadata) {
+/*
+Set the TC on the virtual machine,
+Input: Para got from the Etcd.server
+Output:
+Typical setting is as follows:
+	tc qdisc add dev $nic root handle 1: htb default 1001
+	tc class add dev $nic parent 1: classid 1:1 htb rate 10mbit ceil 10mbit
+	tc class add dev $nic parent 1:1 classid 1:10 htb rate 1mbit ceil 1mbit prio 0
+	tc class add dev $nic parent 1:1 classid 1:1001 htb rate 8mbit ceil 8mbit prio 3
+	tc filter add dev $nic parent 1: protocol ip prio 0 u32 match ip dst 0.0.0.0/0 flowid 1:1
+	tc filter add dev $nic parent 1:1 protocol ip prio 0 u32 match ip dst 10.0.3.153/32 flowid 1:10
+*/
+func Set_vm_outbound_bandwidth(intf_name string, pod_qos map[string]qos_para, pod_info_map map[string]pod_metadata) {
+	log.Println("Start to set TC policy on Virtual machine")
 
-	/*tc qdisc add dev $nic root handle 1: htb default 1001
-	 *tc class add dev $nic parent 1: classid 1:1 htb rate 10mbit ceil 10mbit
-	 *tc class add dev $nic parent 1:1 classid 1:10 htb rate 1mbit ceil 1mbit prio 0
-	 *tc class add dev $nic parent 1:1 classid 1:1001 htb rate 8mbit ceil 8mbit prio 3
-	 *tc filter add dev $nic parent 1: protocol ip prio 0 u32 match ip dst 0.0.0.0/0 flowid 1:1
-	 *tc filter add dev $nic parent 1:1 protocol ip prio 0 u32 match ip dst 10.0.3.153/32 flowid 1:10
-	 */
-
-	println("Start to set VM outbound policy")
 	//get the sum of pod bandwidth
 	node_outbound_bandwidth := node_default_inbound_bandwidth + "mbit"
+	ip := ""
 	action := ""
-	ip := "all"
+
+	// First, find out the 'all' policy and then setup it
+	ip = "all"
 	if _, ok := pod_qos[ip]; ok {
 		node_ip := net.ParseIP(pod_qos[ip].NodeIP)
-		// check whether the same ip
+		// check whether the policy is for this virtual machine
 		if vm_ip.Equal(node_ip) {
-			fmt.Println("That's it, the correct VM")
+			log.Println("That's the correct VM to set")
 			node_outbound_bandwidth = pod_qos[ip].InBandWidthMax
 			action = pod_qos[ip].Action
 		}
 	}
-
 	switch action {
-
 	case "add":
-
-		//configure tc qdisc htb on br-int
-		//Firstly, delete the tc qdisc on the br-int, tc qdisc del dev br root
+		//Firstly, delete the tc qdisc on vm interface, tc qdisc del dev br root
 		cmd := "tc"
 		args := []string{"qdisc", "del", "dev", intf_name, "root"}
 		exe_cmd(cmd, args)
-		/*
-			htb_default_classid = "8001"
-			htb_root_handle = "1:"
-			htb_root_classid = "1:1"
-		*/
-
 		//set tc qdisc htb root
 		cmd = "tc"
 		args = []string{"qdisc", "add", "dev", intf_name, "root", "handle", htb_root_handle, "htb", "default", htb_default_classid}
 		exe_cmd(cmd, args)
-
 		//set tc class htb 1:1
 		//tc class add dev $nic parent 1: classid 1:1 htb rate 10mbit ceil 10mbit
 		rate := node_outbound_bandwidth + "mbit"
 		cmd = "tc"
 		args = []string{"class", "add", "dev", intf_name, "parent", htb_root_handle, "classid", htb_root_classid, "htb", "rate", rate, "ceil", rate}
 		exe_cmd(cmd, args)
-
 	case "delete":
-
-		println("Delete pod", ip)
+		log.Println("Delete pod", ip)
 		rate := node_outbound_bandwidth + "mbit"
 		cmd := "tc"
 		args := []string{"class", "del", "dev", intf_name, "parent", htb_root_handle, "classid", htb_root_classid, "htb", "rate", rate, "ceil", rate}
 		exe_cmd(cmd, args)
-
 	case "change":
-
 		rate := node_outbound_bandwidth + "mbit"
 		cmd := "tc"
 		args := []string{"class", "change", "dev", intf_name, "parent", htb_root_handle, "classid", htb_root_classid, "htb", "rate", rate, "ceil", rate}
 		exe_cmd(cmd, args)
-
 	case "":
-		println("Not change Qos on pod", ip)
-
+		println("No change on VM :", vm_ip)
 	default:
-
 	}
 
-	//configure default class
+	//Then configure the default class
 	ip = "default"
 	action = ""
 	rate := pod_default_inbound_min + "mbit"
@@ -1103,73 +1093,55 @@ func set_vm_outbound_bandwidth(intf_name string, pod_qos map[string]qos_para, po
 		node_ip := net.ParseIP(pod_qos[ip].NodeIP)
 		// check whether the same ip
 		if vm_ip.Equal(node_ip) {
-			fmt.Println("That's it, the correct VM")
-
+			log.Println("That's it, the correct VM")
 			rate = pod_qos[ip].InBandWidthMin + "mbit"
 			ceil = pod_qos[ip].InBandWidthMax + "mbit"
 			action = pod_qos[ip].Action
 		}
 	}
-	htb_default_classid_full := htb_root_handle + htb_default_classid
-
-	switch action {
-
 	/*
 		htb_default_classid = "8001"
 		htb_root_handle = "1:"
 		htb_root_classid = "1:1"
 	*/
+	htb_default_classid_full := htb_root_handle + htb_default_classid
+	switch action {
 	case "add":
-
 		cmd := "tc"
 		args := []string{"class", "add", "dev", intf_name, "parent", htb_root_classid, "classid", htb_default_classid_full, "htb", "rate", rate, "ceil", ceil}
 		exe_cmd(cmd, args)
-
 	case "delete":
-
-		println("Delete pod", ip)
+		log.Println("Delete pod", ip)
 		cmd := "tc"
 		args := []string{"class", "del", "dev", intf_name, "parent", htb_root_classid, "classid", htb_default_classid_full, "htb", "rate", rate, "ceil", ceil}
 		exe_cmd(cmd, args)
-
 	case "change":
-
 		cmd := "tc"
 		args := []string{"class", "change", "dev", intf_name, "parent", htb_root_classid, "classid", htb_default_classid_full, "htb", "rate", rate, "ceil", ceil}
 		exe_cmd(cmd, args)
-
 	case "":
 		println("Not change Qos on pod", ip)
-
 	default:
 
 	}
 
-	println("set bridge root qdisc and class")
-	//show_tc_qdisc(intf_name)
-	//show_tc_class(intf_name)
-
-	//set tc class and filter for each pod
+	//set other class and filters
 	set_vm_outbound_bandwidth_class_and_filter(intf_name, pod_qos, pod_info_map)
 
 	//show tc configuration
-	println("set bridge all qdisc and class")
+	log.Println("Current qdisc, class and filter configuration is: ")
 	show_tc_qdisc(intf_name)
 	show_tc_class(intf_name)
-	println("set bridge filter")
-	//show_tc_filter(intf_name, htb_root_handle)
-	//show_tc_filter(intf_name, htb_root_classid)
+	show_tc_filter(intf_name, htb_root_handle)
+	show_tc_filter(intf_name, htb_root_classid)
 
 }
 
 func set_vm_outbound_bandwidth_class_and_filter(intf_name string, pod_qos map[string]qos_para,
 	pod_info_map map[string]pod_metadata) {
 
-	//println("\nStart to set pod inbound bandwidth class and filter on bridge")
-
 	for ip, val := range pod_qos {
-
-		//skip all and default class
+		//skip the 'all' and 'default' class
 		if ip == "all" || ip == "default" {
 			continue
 		}
@@ -1184,57 +1156,28 @@ func set_vm_outbound_bandwidth_class_and_filter(intf_name string, pod_qos map[st
 			fmt.Println("That's it, the correct VM")
 			action = val.Action
 		}
-
 		switch action {
-
 		case "add":
-
-			//configure tc qdisc htb class for each pod on br_int
 			classid := get_classid(classid_pool)
 			classid_pool = dec_classid_pool(classid_pool)
 			cur_classid := htb_root_handle + strconv.Itoa(classid)
-
-			//println(ip,action," inbound: "+val.InBandWidthMin+", "+val.InBandWidthMax+", "+val.PodPriority, cur_classid)
-
+			// add class
 			cmd := "tc"
 			args := []string{"class", "add", "dev", intf_name, "parent", htb_root_classid, "classid",
 				cur_classid, "htb", "rate", rate, "ceil", ceil, "prio", prio}
 			exe_cmd(cmd, args)
 
-			//set tc filter for each pod on br_int
-			//tc filter add dev $nic parent 1:1 protocol ip prio 0 u32 match ip dst 10.0.3.153/32 flowid 1:2
-			//println(classid, cur_classid)
-
-			//cmd = "tc"
-			//args = []string{"filter", "add", "dev", intf_name, "parent", htb_root_classid, "protocol", "ip",
-			//	"prio", "0", "u32", "match", "ip", "dst", ip + "/32", "flowid", cur_classid}
-			//exe_cmd(cmd, args)
-
-			// for Vxlan with src address : 10.1.2.5
-			//sudo tc filter add dev ens3 parent 1:0 prio 0 bpf bytecode "11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 167838213,6 0 0 262144,6 0 0 0," flowi d 1:20
-
-			//cmd = "tc"
-			//args = []string{"filter", "add", "dev", intf_name, "parent", htb_root_classid, "prio", prio, "bpf", "bytecode", bytecode,
-			//	"flowid", cur_classid}
-
-			// c6 := "tc filter add dev ens3 parent 1:0 bpf bytecode \"11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 167838213,6 0 0 262144,6 0 0 0,\" flowid 1:11"
-			//full_cmd := "sudo tc filter add dev ens3 parent 1:0 bpf bytecode \"11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 167838213,6 0 0 262144,6 0 0 0,\" flowid 1:100"
-
-			/*
-				htb_default_classid = "8001"
-				htb_root_handle = "1:"
-				htb_root_classid = "1:1"
-			*/
-
+			//filter cmd is "sudo tc filter add dev ens3 parent 1:0 bpf bytecode \"11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 167838213,6 0 0 262144,6 0 0 0,\" flowid 1:100"
+			// get the byte code
 			bytecode := generate_bytecode(ip)
-			full_cmd := "tc filter add dev " + string(intf_name) + " parent " + string(htb_root_handle) + " prio " + string(prio) + " bpf bytecode " + bytecode + " flowid " + string(cur_classid)
-			exe_cmd_full(full_cmd)
-			//exe_cmd(cmd, args)
+			filterCmd := "tc filter add dev " + string(intf_name) + " parent " + string(htb_root_handle) + " prio " + string(prio) + " bpf bytecode " + bytecode + " flowid " + string(cur_classid)
+			exe_cmd_full(filterCmd)
 
-			//get filter pref,
+			//get filter pref,  What's this??
 			cmd = "tc"
 			args = []string{"filter", "show", "dev", intf_name, "parent", htb_root_classid}
 			output := exe_cmd(cmd, args)
+			log.Println("Show filter:", output)
 
 			var pref string
 			for _, line := range strings.Split(output, "\n") {
@@ -1249,31 +1192,26 @@ func set_vm_outbound_bandwidth_class_and_filter(intf_name string, pod_qos map[st
 				pod_meta := pod_info_map[ip]
 				pod_meta.classid = classid
 				pod_meta.pref = pref
-				//fmt.Print(pod_meta)
+				log.Print(pod_meta)
 				delete(pod_info_map, ip)
 				pod_info_map[ip] = pod_meta
-
 				//fmt.Print("pod info:", pod_info_map[ip])
 			} else {
 				println("can not find in pod info map.", ip)
 			}
 
 		case "delete":
-
 			if _, ok := pod_info_map[ip]; ok {
-
 				classid := pod_info_map[ip].classid
 				cur_classid := htb_root_handle + strconv.Itoa(classid)
 				pref := pod_info_map[ip].pref
-
-				//println("Delete pod filter on",cur_classid, intf_name, ip, pref)
+				log.Println("Delete pod filter on", cur_classid, intf_name, ip, pref)
 
 				cmd := "tc"
 				args := []string{"filter", "del", "dev", intf_name, "parent", htb_root_classid, "prio", pref}
-
 				exe_cmd(cmd, args)
 
-				//println("Delete pod class on",cur_classid, intf_name, ip, pref)
+				log.Println("Delete pod class on", cur_classid, intf_name, ip, pref)
 				cmd = "tc"
 				args = []string{"class", "del", "dev", intf_name, "parent", htb_root_classid, "classid",
 					cur_classid, "htb", "rate", rate, "ceil", ceil, "prio", prio}
@@ -1291,7 +1229,6 @@ func set_vm_outbound_bandwidth_class_and_filter(intf_name string, pod_qos map[st
 			}
 
 		case "change":
-
 			classid := pod_info_map[ip].classid
 			cur_classid := htb_root_handle + strconv.Itoa(classid)
 			println("change pod class on", cur_classid, intf_name, ip)
@@ -1317,9 +1254,10 @@ func set_vm_outbound_bandwidth_class_and_filter(intf_name string, pod_qos map[st
 	//return classid_pool
 }
 func generate_bytecode(ip string) string {
-	//fmt.Println("current IP: ", ip)
+	log.Println("current IP is : ", ip)
 	// for Vxlan src 10.1.2.5
-	//sudo tc filter add dev ens3 parent 1:0 bpf bytecode "11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 167838213,6 0 0 262144,6 0 0 0," flowi d 1:20
+	//sudo tc filter add dev ens3 parent 1:0 bpf bytecode \
+	//"11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 167838213,6 0 0 262144,6 0 0 0," flowi d 1:20
 	part1 := "\"11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 "
 	var temp int64
 	for _, value := range strings.Split(ip, ".") {
@@ -1333,9 +1271,9 @@ func generate_bytecode(ip string) string {
 	}
 	part2 := strconv.FormatInt(temp, 10)
 	part3 := ",6 0 0 262144,6 0 0 0,\""
-	bc := part1 + part2 + part3
-	fmt.Println("bytecode is: ", bc)
-	return bc
+	code := part1 + part2 + part3
+	log.Println("bytecode is: ", code)
+	return code
 }
 
 //get veth list on the host
