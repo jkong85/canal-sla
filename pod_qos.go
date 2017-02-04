@@ -70,15 +70,15 @@ var vm_ip net.IP
 
 func main() {
 
-	//etcd_server := "127.0.0.1:4001"
+	etcd_server := "127.0.0.1:4001"
 
-	//load_pod_qos_policy(etcd_server)
+	vm_ip = get_intf_ipaddress(node_dev)
+	load_pod_qos_policy(etcd_server)
 	//test()
 
 	//Firstly, get the VM's ip address
-	vm_ip = get_intf_ipaddress(node_dev)
 
-	load_pod_qos_policy_test()
+	//load_pod_qos_policy_test()
 }
 
 func test() {
@@ -222,6 +222,9 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 
 			t4 := time.Now().UnixNano() / 1000000
 			set_br_inbound_bandwidth(br_int, pod_qos, pod_info_map)
+
+			// start to config the Host
+			Set_vm_outbound_bandwidth(br_int, pod_qos, pod_info_map)
 
 			pod_info_map, cid_pid_map = delete_pod_info_map(pod_qos, pod_info_map, cid_pid_map)
 
