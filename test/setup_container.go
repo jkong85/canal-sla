@@ -136,6 +136,9 @@ func clear_containers() {
 	clean_exited_cmd := "docker ps -a | grep 'Exited' | awk '{print $1}' | xargs --no-run-if-empty sudo docker rm -f"
 	exe_cmd_full(clean_exited_cmd)
 
+	clean_exited_cmd = "docker ps -a | grep 'Created' | awk '{print $1}' | xargs --no-run-if-empty sudo docker rm -f"
+	exe_cmd_full(clean_exited_cmd)
+
 	// get the still up containder id list
 	cmd := "docker"
 	args := []string{"ps", "-q"}
