@@ -114,6 +114,8 @@ func create_vxlan_network() {
 		ip := ip_net + strconv.Itoa(count)
 		eth_cmd := "nsenter -t " + pid + " -n ifconfig eth0 " + ip + "/24"
 		exe_cmd_full(eth_cmd)
+		eth_cmd = "nsenter -t " + pid + " -n ifconfig eth0 mtu 1450"
+		exe_cmd_full(eth_cmd)
 		// change the container name to IPaddress related
 		cmd = "docker"
 		args = []string{"rename", cid, ip_prefix + "_" + strconv.Itoa(count)}
