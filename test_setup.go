@@ -125,7 +125,7 @@ func create_vxlan_network() {
 func create_containers() {
 	number := number_container
 	for number > 0 {
-		create_docker_cmd := "docker run --net=none --privileged=true -dit kj_test bash"
+		create_docker_cmd := "docker run --net=none --privileged=true -dit ubuntu_test bash"
 		exe_cmd_full(create_docker_cmd)
 		number = number - 1
 	}
