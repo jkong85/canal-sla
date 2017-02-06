@@ -57,7 +57,7 @@ func main() {
 	}
 	// 10.145.240.154/2 is two VM
 	// 172.17.0.* is the ip address of the container (here one container has one ip address)
-	//
+	// Node IP, PodID, VlanID, VxlanID, PodIP, Action ....
 	bw := []ContainerBW{
 		{"10.145.240.154", "1", "100", "1", "all", "add", "1000", "1000", "1000", "1000", "0"},
 		{"10.145.240.154", "1", "100", "1", "default", "add", "10", "100", "10", "100", "5"},

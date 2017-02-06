@@ -20,6 +20,7 @@ var start_ip int
 var ip_prefix string
 var ip_interval int
 var ip_vxlan_remote string
+var image string
 
 func main() {
 	flag_clear := flag.Bool("clear", false, "Only clear the containers")
@@ -27,6 +28,7 @@ func main() {
 	flag.IntVar(&start_ip, "ip", 0, "the first ip address of containers")
 	flag.IntVar(&ip_interval, "interval", 10, "IP address Interval")
 	flag.StringVar(&ip_vxlan_remote, "rip", "10.145.240.131", "remote ip for vxlan")
+	flag.StringVar(&image, "i", "test", "image for container")
 	// first clean the existing containers
 
 	flag.Parse()
@@ -134,7 +136,7 @@ func create_vxlan_network() {
 func create_containers() {
 	number := number_container
 	for number > 0 {
-		create_docker_cmd := "docker run --net=none --privileged=true -dit test_1 bash"
+		create_docker_cmd := "docker run --net=none --privileged=true -dit " + image + " bash"
 		exe_cmd_full(create_docker_cmd)
 		number = number - 1
 	}
