@@ -107,15 +107,22 @@ func create_vxlan_network() {
 		cmd = "docker"
 		args = []string{"inspect", "-f", "{{.State.Pid}}", cid}
 		pid := strings.Trim(exe_cmd(cmd, args), "\n")
+
 		// add eth0 for container and bind it to the ovs-bridge
 		ovs_docker_cmd := "./ovs-docker add-port vxbr eth0 " + cid
 		exe_cmd_full(ovs_docker_cmd)
+
 		// config eth0 ip address of the container by nsenter
 		ip := ip_net + strconv.Itoa(count)
 		eth_cmd := "nsenter -t " + pid + " -n ifconfig eth0 " + ip + "/24"
 		exe_cmd_full(eth_cmd)
+		// set mtu for large file trans.
 		eth_cmd = "nsenter -t " + pid + " -n ifconfig eth0 mtu 1450"
 		exe_cmd_full(eth_cmd)
+		// start the ftp server
+		//eth_cmd = "nsenter -t " + pid + " -n /usr/sbin/vsftpd & "
+		//exe_cmd_full(eth_cmd)
+
 		// change the container name to IPaddress related
 		cmd = "docker"
 		args = []string{"rename", cid, ip_prefix + "_" + strconv.Itoa(count)}
