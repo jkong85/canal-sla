@@ -1090,6 +1090,7 @@ func Set_vm_outbound_bandwidth(intf_name string, pod_qos map[string]qos_para, po
 	//Then configure the default class
 	ip = "default"
 	action = ""
+	prio := ""
 	rate := pod_default_inbound_min + "mbit"
 	ceil := pod_default_inbound_max + "mbit"
 
@@ -1101,6 +1102,7 @@ func Set_vm_outbound_bandwidth(intf_name string, pod_qos map[string]qos_para, po
 			rate = pod_qos[ip].InBandWidthMin + "mbit"
 			ceil = pod_qos[ip].InBandWidthMax + "mbit"
 			action = pod_qos[ip].Action
+			prio = pod_qos[ip].PodPriority
 		}
 	}
 	/*
@@ -1112,7 +1114,7 @@ func Set_vm_outbound_bandwidth(intf_name string, pod_qos map[string]qos_para, po
 	switch action {
 	case "add":
 		cmd := "tc"
-		args := []string{"class", "add", "dev", intf_name, "parent", htb_root_classid, "classid", htb_default_classid_full, "htb", "rate", rate, "ceil", ceil}
+		args := []string{"class", "add", "dev", intf_name, "parent", htb_root_classid, "classid", htb_default_classid_full, "htb", "rate", rate, "ceil", ceil, "prio", prio}
 		exe_cmd(cmd, args)
 	case "delete":
 		log.Println("Delete pod", ip)
