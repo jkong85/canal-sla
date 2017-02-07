@@ -1,10 +1,10 @@
 #!/bin/bash
 max=$1
 date
-for (( i = 1; i < 100; i++ ))
+for (( i = 1; i < $max; i++ ))
 do
     echo "$i"
-    ./bwc
+    ./bwctl
     sleep 3 
 done
 date

@@ -73,6 +73,7 @@ func main() {
 	etcd_server := "127.0.0.1:4001"
 
 	vm_ip = get_intf_ipaddress(node_dev)
+
 	load_pod_qos_policy(etcd_server)
 	//test()
 
@@ -190,7 +191,7 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 	intf, err := net.InterfaceByName(node_dev)
 
 	if err != nil {
-		log.Fatal("Cannot find interface by name eth0")
+		log.Fatal("Cannot find interface by name " + node_dev)
 	}
 
 	mac := intf.HardwareAddr
@@ -214,17 +215,17 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 
 			t2 := time.Now().UnixNano() / 1000000
 			//config pod outbound bandwidth tc qdisc on eth0 in pod
-			set_pod_eth_outbound_bandwidth(pod_qos, pod_info_map)
+			//set_pod_eth_outbound_bandwidth(pod_qos, pod_info_map)
 
 			t3 := time.Now().UnixNano() / 1000000
 			//config pod inbound bandwidth tc qdisc on veth outside
-			set_pod_veth_inbound_bandwidth(pod_qos, pod_info_map)
+			//set_pod_veth_inbound_bandwidth(pod_qos, pod_info_map)
 
 			t4 := time.Now().UnixNano() / 1000000
-			set_br_inbound_bandwidth(br_int, pod_qos, pod_info_map)
+			//set_br_inbound_bandwidth(br_int, pod_qos, pod_info_map)
 
 			// start to config the Host
-			Set_vm_outbound_bandwidth(br_int, pod_qos, pod_info_map)
+			Set_vm_outbound_bandwidth(node_dev, pod_qos, pod_info_map)
 
 			pod_info_map, cid_pid_map = delete_pod_info_map(pod_qos, pod_info_map, cid_pid_map)
 
@@ -1030,7 +1031,7 @@ Output:
 Typical setting is as follows:
 	tc qdisc add dev $nic root handle 1: htb default 1001
 	tc class add dev $nic parent 1: classid 1:1 htb rate 10mbit ceil 10mbit
-	tc class add dev $nic parent 1:1 classid 1:10 htb rate 1mbit ceil 1mbit prio 0
+	tc class add dev $nic parent 1:1 classid 1:10 htb rate 1mbit ceil 2mbit prio 0
 	tc class add dev $nic parent 1:1 classid 1:1001 htb rate 8mbit ceil 8mbit prio 3
 	tc filter add dev $nic parent 1: protocol ip prio 0 u32 match ip dst 0.0.0.0/0 flowid 1:1
 	tc filter add dev $nic parent 1:1 protocol ip prio 0 u32 match ip dst 10.0.3.153/32 flowid 1:10
@@ -1156,7 +1157,7 @@ func set_vm_outbound_bandwidth_class_and_filter(intf_name string, pod_qos map[st
 		node_ip := net.ParseIP(pod_qos[ip].NodeIP)
 		// check whether the same ip
 		if vm_ip.Equal(node_ip) {
-			fmt.Println("That's it, the correct VM")
+			log.Println("That's it, the correct VM")
 			action = val.Action
 		}
 		switch action {
@@ -1337,26 +1338,26 @@ func get_intf_ipaddress(intf_name string) net.IP {
 }
 
 func exe_cmd_full(cmd string) {
-	fmt.Println("CMD is : ", cmd)
+	log.Println("CMD is : ", cmd)
 	out, err := exec.Command("sh", "-c", cmd).Output()
 	if err != nil {
-		fmt.Println("Error to exec CMD", cmd)
+		log.Println("Error to exec CMD", cmd)
 	}
-	fmt.Println("Output of CMD :", string(out))
+	log.Println("Output of CMD :", string(out))
 }
 
 func exe_cmd(cmd string, args []string) string {
 
-	fmt.Println("command is ", cmd, " ", args)
+	log.Println("command is ", cmd, " ", args)
 
 	//out, err := exec.Command(cmd, args...).Output()
 	out, err := exec.Command(cmd, args...).Output()
 
 	if err != nil {
-		fmt.Printf("exec cmd error: %s\n", err)
+		log.Println("exec cmd error: %s\n", err)
 	}
 
-	//fmt.Printf("exec cmd out: %s\n", out)
+	//log.Println("exec cmd out: %s\n", out)
 
 	s := string(out)
 
