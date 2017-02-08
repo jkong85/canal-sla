@@ -18,12 +18,13 @@ import (
 )
 
 const (
-	pod_dev                        = "eth0"
-	node_dev                       = "ens3"    //"eth0"
-	br_int                         = "docker0" //"br-int"
-	htb_default_classid            = "8001"
-	htb_root_handle                = "1:"
-	htb_root_classid               = "1:1"
+	pod_dev             = "eth0"
+	node_dev            = "ens3"    //"eth0"
+	br_int              = "docker0" //"br-int"
+	htb_default_classid = "8001"
+	htb_root_handle     = "1:"
+	//htb_root_classid               = "1:1"
+	htb_root_classid               = "1:0" //changed by Jian Kong
 	htb_high_prio                  = "0"
 	htb_mid_prio                   = "5"
 	htb_low_prio                   = "7"
@@ -451,6 +452,7 @@ func set_br_inbound_bandwidth(br_name string, pod_qos map[string]qos_para, pod_i
 	ip := "all"
 	if _, ok := pod_qos[ip]; ok {
 		node_inbound_bandwidth = pod_qos[ip].InBandWidthMax
+		node_outbound_bandwidth = pod_qos[ip].OutBandWidthMax
 		action = pod_qos[ip].Action
 	}
 
@@ -480,6 +482,7 @@ func set_br_inbound_bandwidth(br_name string, pod_qos map[string]qos_para, pod_i
 
 		// Config the VM
 		//Firstly, delete the tc qdisc on vm interface, tc qdisc del dev br root
+		log.Println(" Set VM interface all")
 		cmd = "tc"
 		args = []string{"qdisc", "del", "dev", intf_name, "root"}
 		exe_cmd(cmd, args)
@@ -489,7 +492,7 @@ func set_br_inbound_bandwidth(br_name string, pod_qos map[string]qos_para, pod_i
 		exe_cmd(cmd, args)
 		//set tc class htb 1:1
 		//tc class add dev $nic parent 1: classid 1:1 htb rate 10mbit ceil 10mbit
-		rate = node_outbound_bandwidth + "mbit"
+		rate = node_outbound_bandwidth
 		cmd = "tc"
 		args = []string{"class", "add", "dev", intf_name, "parent", htb_root_handle, "classid", htb_root_classid, "htb", "rate", rate, "ceil", rate}
 		exe_cmd(cmd, args)
@@ -556,6 +559,7 @@ func set_br_inbound_bandwidth(br_name string, pod_qos map[string]qos_para, pod_i
 		args := []string{"class", "add", "dev", br_name, "parent", htb_root_classid, "classid", htb_default_classid, "htb", "rate", rate, "ceil", ceil}
 		exe_cmd(cmd, args)
 		// VM node_dev
+		log.Println(" Set VM interface Default")
 		cmd = "tc"
 		args = []string{"class", "add", "dev", intf_name, "parent", htb_root_classid, "classid", htb_default_classid_full, "htb", "rate", rate, "ceil", ceil}
 		exe_cmd(cmd, args)
@@ -1052,7 +1056,7 @@ func exe_cmd_full(cmd string) {
 
 func exe_cmd(cmd string, args []string) string {
 
-	//fmt.Println("command is ", cmd, " ", args)
+	log.Println("command is ", cmd, " ", args)
 
 	out, err := exec.Command(cmd, args...).Output()
 
