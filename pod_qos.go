@@ -15,7 +15,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	// added by Jian for log
 )
 
 const (
@@ -65,109 +64,13 @@ type pod_metadata struct {
 type qosInput []map[string]string
 
 var classid_pool []int
-var classid_pool_vm []int
-
-var vm_ip net.IP
 
 func main() {
 
 	etcd_server := "127.0.0.1:4001"
 
-	vm_ip = get_intf_ipaddress(node_dev)
-
 	load_pod_qos_policy(etcd_server)
-	//test()
 
-	//Firstly, get the VM's ip address
-
-	//load_pod_qos_policy_test()
-}
-
-func test() {
-	//get container pid
-	cmd := "docker"
-	container_id := "33ec83192b19"
-	args := []string{"inspect", "-f", "{{.State.Pid}}", container_id}
-	container_pid := strings.Trim(exe_cmd(cmd, args), "\n")
-	fmt.Println("pid is:", container_pid)
-
-	//cmd = "tc"
-	//show_cmd := "qdisc show dev ens3"
-	//args = []string{show_cmd}
-	//println(exe_cmd(cmd, args))
-
-	//full_cmd := "tc qdisc show dev ens3"
-
-	c1 := "sudo tc qdisc add dev ens3 root handle 1: htb default 10"
-	c2 := "tc class add dev ens3 parent 1: classid 1:1 htb rate 100kbps ceil 100kbps"
-	c3 := "tc class add dev ens3 parent 1:1 classid 1:10 htb rate 30kbps ceil 100kbps"
-	c4 := "tc class add dev ens3 parent 1:1 classid 1:11 htb rate 10kbps ceil 100kbps"
-	//c5 := "tc filter add dev ens3 protocol ip parent 1:0 prio 1 u32 match ip src 10.145.240.111 match ip dport 80 0xffff flowid 1:10"
-	c6 := "tc filter add dev ens3 parent 1:0 bpf bytecode \"11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 167838213,6 0 0 262144,6 0 0 0,\" flowid 1:11"
-
-	out, err := exec.Command("sh", "-c", c1).Output()
-	out, err = exec.Command("sh", "-c", c2).Output()
-	out, err = exec.Command("sh", "-c", c3).Output()
-	out, err = exec.Command("sh", "-c", c4).Output()
-	//out, err = exec.Command("sh", "-c", c5).Output()
-	exe_cmd_full(c6)
-	if err != nil {
-		fmt.Println("new cmd error")
-	}
-	fmt.Println("theout is : \n", string(out))
-
-	ipaddr := get_intf_ipaddress("ens3")
-	fmt.Println("ip address is : ", ipaddr)
-}
-
-//func load_pod_qos_policy_test() map[string]qos_para {
-func load_pod_qos_policy_test() {
-	pod_info_map := map[string]pod_metadata{}
-	cid_pid_map := map[string]string{}
-
-	classid_pool = init_classid_pool(classid_pool, classid_max)
-	classid_pool_vm = init_classid_pool(classid_pool_vm, classid_max)
-
-	//intf, err := net.InterfaceByName(node_dev)
-
-	//if err != nil {
-	//	log.Fatal("Cannot find interface by name eth0")
-	//}
-
-	//mac := intf.HardwareAddr
-
-	start := time.Now().UnixNano() / 1000000
-	pod_qos := parse_qos_info_test()
-
-	t1 := time.Now().UnixNano() / 1000000
-	pod_info_map, cid_pid_map = get_pod_info_map(pod_qos, pod_info_map, cid_pid_map)
-	fmt.Println(" -- end of get pod info map")
-
-	t2 := time.Now().UnixNano() / 1000000
-	//config pod outbound bandwidth tc qdisc on eth0 in pod
-	set_pod_eth_outbound_bandwidth(pod_qos, pod_info_map)
-	fmt.Println("--- end of set pod eth outbound")
-
-	t3 := time.Now().UnixNano() / 1000000
-	//config pod inbound bandwidth tc qdisc on veth outside
-	set_pod_veth_inbound_bandwidth(pod_qos, pod_info_map)
-	fmt.Println("--- end of set pod veth inbound")
-
-	t4 := time.Now().UnixNano() / 1000000
-	set_br_inbound_bandwidth(br_int, pod_qos, pod_info_map)
-	fmt.Println("--- end of set br inbound")
-
-	t5 := time.Now().UnixNano() / 1000000
-	Set_vm_outbound_bandwidth(node_dev, pod_qos, pod_info_map)
-	fmt.Println("--- end of set VM outbound")
-
-	t6 := time.Now().UnixNano() / 1000000
-
-	pod_info_map, cid_pid_map = delete_pod_info_map(pod_qos, pod_info_map, cid_pid_map)
-
-	end := time.Now().UnixNano() / 1000000
-	fmt.Printf("update pod qos : update time %d|%d|%d|%d|%d|%d|%d|%d ", t1-start, t2-t1, t3-t2, t4-t3, t5-t4, t6-t5, end-t6, end-start)
-	fmt.Printf("time to config VM is: ", t6-t5)
 }
 
 func load_pod_qos_policy(etcd_server string) map[string]qos_para {
@@ -176,7 +79,6 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 	cid_pid_map := map[string]string{}
 
 	classid_pool = init_classid_pool(classid_max)
-	classid_pool_vm = init_classid_pool(classid_max)
 
 	// We can register as many backends that are supported by libkv
 	etcd.Register()
@@ -232,7 +134,7 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 
 			// start to config the Host
 			t5 := time.Now().UnixNano() / 1000000
-			Set_vm_outbound_bandwidth(node_dev, pod_qos, pod_info_map)
+			//Set_vm_outbound_bandwidth(node_dev, pod_qos, pod_info_map)
 
 			t6 := time.Now().UnixNano() / 1000000
 
@@ -250,7 +152,7 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 	}
 }
 
-func init_classid_pool(classid_pool []int, classid_max int) []int {
+func init_classid_pool(classid_max int) []int {
 
 	for i := 2; i <= classid_max; i++ {
 		classid_pool = append(classid_pool, i)
@@ -282,7 +184,7 @@ func dec_classid_pool(classid_pool []int) []int {
 	}
 }
 
-func free_classid(classid_pool []int, classid int) []int {
+func free_classid(classid int) []int {
 
 	classid_pool = append(classid_pool, classid)
 	return classid_pool
@@ -324,65 +226,8 @@ func parse_qos_info(etcd_server string, key string) map[string]qos_para {
 	return load_pod_qos_local(data)
 }
 
-func parse_qos_info_test() map[string]qos_para {
-	//type qosInput []map[string]string
-	var data qosInput
-	//data = []map[string]string{
-	data = qosInput{
-		map[string]string{"NodeIP": "10.145.240.154", "PodID": "1", "VlanID": "1", "VxlanID": "1", "PodIP": "all", "Action": "add", "InBandWidthMin": "10", "InBandWidthMax": "100", "OutBandWidthMin": "10", "OutBandWidthMax": "100", "PodPriority": "5"},
-
-		map[string]string{"NodeIP": "10.145.240.154", "PodID": "2", "VlanID": "1", "VxlanID": "1", "PodIP": "default", "Action": "add", "InBandWidthMin": "10", "InBandWidthMax": "100", "OutBandWidthMin": "10", "OutBandWidthMax": "100", "PodPriority": "5"},
-
-		map[string]string{"NodeIP": "10.145.240.154", "PodID": "3", "VlanID": "1", "VxlanID": "1", "PodIP": "10.1.2.3", "Action": "add", "InBandWidthMin": "3", "InBandWidthMax": "30", "OutBandWidthMin": "3", "OutBandWidthMax": "30", "PodPriority": "5"},
-
-		map[string]string{"NodeIP": "10.145.240.154", "PodID": "3", "VlanID": "1", "VxlanID": "1", "PodIP": "10.1.2.5", "Action": "add", "InBandWidthMin": "5", "InBandWidthMax": "50", "OutBandWidthMin": "5", "OutBandWidthMax": "50", "PodPriority": "5"},
-
-		map[string]string{"NodeIP": "10.145.240.154", "PodID": "4", "VlanID": "1", "VxlanID": "1", "PodIP": "10.1.2.7", "Action": "add", "InBandWidthMin": "7", "InBandWidthMax": "70", "OutBandWidthMin": "7", "OutBandWidthMax": "70", "PodPriority": "5"},
-
-		//map[string]string{"NodeIP": "10.145.240.154", "PodID": "5", "VlanID": "1", "VxlanID": "1", "PodIP": "10.1.2.9", "Action": "add", "InBandWidthMin": "10", "InBandWidthMax": "100", "OutBandWidthMin": "10", "OutBandWidthMax": "100", "PodPriority": "5"},
-
-		//map[string]string{"NodeIP": "10.145.240.154", "PodID": "5", "VlanID": "1", "VxlanID": "1", "PodIP": "10.1.2.11", "Action": "add", "InBandWidthMin": "10", "InBandWidthMax": "100", "OutBandWidthMin": "10", "OutBandWidthMax": "100", "PodPriority": "5"},
-
-		//{"default": {"10.145.240.154", "1", "100", "1", "default", "add", "10", "100", "10", "100", "5"}},
-		//{"10.1.2.5": {"10.145.240.154", "1", "100", "1", "10.1.2.5", "add", "500", "500", "700", "700", "0"}},
-		//{"10.1.2.7": {"10.145.240.154", "1", "102", "1", "10.1.2.7", "add", "200", "200", "200", "200", "5"}},
-		//{"10.1.2.9": {"10.145.240.154", "1", "102", "1", "10.1.2.9", "add", "200", "200", "200", "200", "7"}},
-		//{"10.1.2.11": {"10.145.240.154", "1", "100", "1", "10.1.2.11", "add", "1000", "1000", "1000", "1000", "0"}},
-	}
-
-	return load_pod_qos_local(data)
-}
-
 func load_pod_qos_local(data qosInput) map[string]qos_para {
-	/* Defined in bwc.go to test
-	type ContainerBW struct {
-		NodeIP          string
-		PodID           string
-		VlanID          string
-		VxlanID         string
-		PodIP           string
-		Action          string
-		InBandWidthMin  string // unit is Mbps
-		InBandWidthMax  string // unit is Mbps
-		OutBandWidthMin string // unit is Mbps
-		OutBandWidthMax string // unit is Mbps
-		PodPriority     string // 0-7, 0 is the highest priority, 7 is the lowest priority.
-	}
 
-	bw := []ContainerBW{
-		Node IP			  PodID 	VlanID 		vxlanID 		PodIP
-		{"10.145.240.154", "1", 	"100", 		"1",		 "all", 		"add", "1000", "1000", "1000", "1000", "0"},
-		{"10.145.240.154", "1", 	"100", 		"1",		 "default", 	"add", "10", "100", "10", "100", "5"},
-		{"10.145.240.154", "1", 	"100", 		"1",		 "172.17.0.2", 	"add", "500", "500", "700", "700", "0"},
-		{"10.145.240.160", "2", 	"102", 		"2",		 "172.17.0.3", 	"add", "200", "200", "200", "200", "5"},
-		{"10.145.240.160", "2", 	"102", 		"2",		 "172.17.0.4", 	"add", "200", "200", "200", "200", "7"},
-		{"10.145.240.154", "1", 	"100", 		"1",		 "172.17.0.5", 	"add", "1000", "1000", "1000", "1000", "0"},
-		{"10.145.240.154", "1", 	"100", 		"1",		 "172.17.0.6", 	"add", "10", "100", "10", "100", "5"},
-		{"10.145.240.154", "1", 	"100", 		"1",		 "172.17.0.7", 	"add", "500", "500", "700", "700", "0"},
-		{"10.145.240.160", "2", 	"102", 		"2",		 "172.17.0.8", 	"add", "200", "200", "200", "200", "5"},
-		{"10.145.240.160", "2", 	"102", 		"2",		 "172.17.0.9", 	"add", "200", "200", "200", "200", "7"},
-	}
-	*/
 	pod_qos := map[string]qos_para{}
 
 	println("Start to retrive qos file...")
@@ -400,14 +245,13 @@ func load_pod_qos_local(data qosInput) map[string]qos_para {
 		pod_prio := data[i]["PodPriority"]
 		classid := 0
 
-		fmt.Println("Pod ip: " + pod_ip)
-		fmt.Println("Node id: " + node_id)
+		//fmt.Println("pod ip: "+pod_ip)
 		pod_qos[pod_ip] = qos_para{node_id, pod_id, vlan_id, vxlan_id,
 			pod_ip, action, inbandwidth_min, inbandwidth_max,
 			outbandwidth_min, outbandwidth_max, pod_prio, classid}
 	}
 
-	//fmt.Print("pod_qos", pod_qos, "\n")
+	//fmt.Print("pod_qos", pod_qos,"\n")
 	return pod_qos
 }
 
@@ -602,12 +446,15 @@ func set_br_inbound_bandwidth(br_name string, pod_qos map[string]qos_para, pod_i
 	//println("Start to set bridge inbound bandwidth...")
 	//get the sum of pod bandwidth
 	node_inbound_bandwidth := node_default_inbound_bandwidth + "mbit"
+	node_outbound_bandwidth := node_default_inbound_bandwidth + "mbit"
 	action := ""
 	ip := "all"
 	if _, ok := pod_qos[ip]; ok {
 		node_inbound_bandwidth = pod_qos[ip].InBandWidthMax
 		action = pod_qos[ip].Action
 	}
+
+	intf_name := node_dev
 
 	switch action {
 
@@ -618,11 +465,6 @@ func set_br_inbound_bandwidth(br_name string, pod_qos map[string]qos_para, pod_i
 		cmd := "tc"
 		args := []string{"qdisc", "del", "dev", br_name, "root"}
 		exe_cmd(cmd, args)
-		/*
-			htb_default_classid = "8001"
-			htb_root_handle = "1:"
-			htb_root_classid = "1:1"
-		*/
 
 		//set tc qdisc htb root
 		cmd = "tc"
@@ -636,19 +478,48 @@ func set_br_inbound_bandwidth(br_name string, pod_qos map[string]qos_para, pod_i
 		args = []string{"class", "add", "dev", br_name, "parent", htb_root_handle, "classid", htb_root_classid, "htb", "rate", rate, "ceil", rate}
 		exe_cmd(cmd, args)
 
+		// Config the VM
+		//Firstly, delete the tc qdisc on vm interface, tc qdisc del dev br root
+		cmd = "tc"
+		args = []string{"qdisc", "del", "dev", intf_name, "root"}
+		exe_cmd(cmd, args)
+		//set tc qdisc htb root
+		cmd = "tc"
+		args = []string{"qdisc", "add", "dev", intf_name, "root", "handle", htb_root_handle, "htb", "default", htb_default_classid}
+		exe_cmd(cmd, args)
+		//set tc class htb 1:1
+		//tc class add dev $nic parent 1: classid 1:1 htb rate 10mbit ceil 10mbit
+		rate = node_outbound_bandwidth + "mbit"
+		cmd = "tc"
+		args = []string{"class", "add", "dev", intf_name, "parent", htb_root_handle, "classid", htb_root_classid, "htb", "rate", rate, "ceil", rate}
+		exe_cmd(cmd, args)
+
 	case "delete":
 
+		//  delete the br-int
 		println("Delete pod", ip)
 		rate := node_inbound_bandwidth + "mbit"
 		cmd := "tc"
 		args := []string{"class", "del", "dev", br_name, "parent", htb_root_handle, "classid", htb_root_classid, "htb", "rate", rate, "ceil", rate}
 		exe_cmd(cmd, args)
 
-	case "change":
+		// delete the vm node_dev
+		rate = node_outbound_bandwidth + "mbit"
+		cmd = "tc"
+		args = []string{"class", "del", "dev", intf_name, "parent", htb_root_handle, "classid", htb_root_classid, "htb", "rate", rate, "ceil", rate}
+		exe_cmd(cmd, args)
 
+	case "change":
+		// change the br-int
 		rate := node_inbound_bandwidth + "mbit"
 		cmd := "tc"
 		args := []string{"class", "change", "dev", br_name, "parent", htb_root_handle, "classid", htb_root_classid, "htb", "rate", rate, "ceil", rate}
+		exe_cmd(cmd, args)
+
+		// change the VM node_dev
+		rate = node_outbound_bandwidth + "mbit"
+		cmd = "tc"
+		args = []string{"class", "change", "dev", intf_name, "parent", htb_root_handle, "classid", htb_root_classid, "htb", "rate", rate, "ceil", rate}
 		exe_cmd(cmd, args)
 
 	case "":
@@ -670,24 +541,34 @@ func set_br_inbound_bandwidth(br_name string, pod_qos map[string]qos_para, pod_i
 		action = pod_qos[ip].Action
 	}
 
-	switch action {
-
 	/*
 		htb_default_classid = "8001"
 		htb_root_handle = "1:"
 		htb_root_classid = "1:1"
 	*/
-	case "add":
+	htb_default_classid_full := htb_root_handle + htb_default_classid
 
+	switch action {
+
+	case "add":
+		// br-int
 		cmd := "tc"
 		args := []string{"class", "add", "dev", br_name, "parent", htb_root_classid, "classid", htb_default_classid, "htb", "rate", rate, "ceil", ceil}
 		exe_cmd(cmd, args)
+		// VM node_dev
+		cmd = "tc"
+		args = []string{"class", "add", "dev", intf_name, "parent", htb_root_classid, "classid", htb_default_classid_full, "htb", "rate", rate, "ceil", ceil}
+		exe_cmd(cmd, args)
 
 	case "delete":
-
+		// br-int
 		println("Delete pod", ip)
 		cmd := "tc"
 		args := []string{"class", "del", "dev", br_name, "parent", htb_root_classid, "classid", htb_default_classid, "htb", "rate", rate, "ceil", ceil}
+		exe_cmd(cmd, args)
+		// vm intface
+		cmd = "tc"
+		args = []string{"class", "del", "dev", intf_name, "parent", htb_root_classid, "classid", htb_default_classid_full, "htb", "rate", rate, "ceil", ceil}
 		exe_cmd(cmd, args)
 
 	case "change":
@@ -725,6 +606,8 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 
 	//println("\nStart to set pod inbound bandwidth class and filter on bridge")
 
+	intf_name := node_dev
+
 	for ip, val := range pod_qos {
 
 		//skip all and default class
@@ -741,7 +624,9 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 		switch action {
 
 		case "add":
-
+			/*
+				config br-int
+			*/
 			//configure tc qdisc htb class for each pod on br_int
 			classid := get_classid(classid_pool)
 			classid_pool = dec_classid_pool(classid_pool)
@@ -761,6 +646,20 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 			args = []string{"filter", "add", "dev", br_name, "parent", htb_root_classid, "protocol", "ip",
 				"prio", "0", "u32", "match", "ip", "dst", ip + "/32", "flowid", cur_classid}
 			exe_cmd(cmd, args)
+
+			/*
+				config VM interface
+			*/
+			cmd = "tc"
+			args = []string{"class", "add", "dev", intf_name, "parent", htb_root_classid, "classid",
+				cur_classid, "htb", "rate", rate, "ceil", ceil, "prio", prio}
+			exe_cmd(cmd, args)
+
+			//filter cmd is "sudo tc filter add dev ens3 parent 1:0 bpf bytecode \"11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 167838213,6 0 0 262144,6 0 0 0,\" flowid 1:100"
+			// get the byte code
+			bytecode := generate_bytecode(ip)
+			filterCmd := "tc filter add dev " + string(intf_name) + " parent " + string(htb_root_classid) + " prio " + string(prio) + " bpf bytecode " + bytecode + " flowid " + string(cur_classid)
+			exe_cmd_full(filterCmd)
 
 			//get filter pref,
 			cmd = "tc"
@@ -810,7 +709,21 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 					cur_classid, "htb", "rate", rate, "ceil", ceil, "prio", prio}
 				exe_cmd(cmd, args)
 
-				classid_pool = free_classid(classid_pool, classid)
+				/*
+					delete VM interface
+				*/
+				cmd = "tc"
+				args = []string{"filter", "del", "dev", intf_name, "parent", htb_root_classid, "prio", pref}
+				exe_cmd(cmd, args)
+
+				log.Println("Delete pod class on", cur_classid, intf_name, ip, pref)
+				cmd = "tc"
+				args = []string{"class", "del", "dev", intf_name, "parent", htb_root_classid, "classid",
+					cur_classid, "htb", "rate", rate, "ceil", ceil, "prio", prio}
+				exe_cmd(cmd, args)
+
+				// update classid_pool
+				classid_pool = free_classid(classid)
 
 				pod_meta := pod_info_map[ip]
 				pod_meta.classid = 0
@@ -826,9 +739,19 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 			classid := pod_info_map[ip].classid
 			cur_classid := htb_root_handle + strconv.Itoa(classid)
 			println("change pod class on", cur_classid, br_name, ip)
-
+			/*
+				config br-int
+			*/
 			cmd := "tc"
 			args := []string{"class", "change", "dev", br_name, "parent", htb_root_classid, "classid",
+				cur_classid, "htb", "rate", rate, "ceil", ceil, "prio", prio}
+			exe_cmd(cmd, args)
+
+			/*
+				config br-int
+			*/
+			cmd = "tc"
+			args = []string{"class", "change", "dev", intf_name, "parent", htb_root_classid, "classid",
 				cur_classid, "htb", "rate", rate, "ceil", ceil, "prio", prio}
 			exe_cmd(cmd, args)
 
@@ -846,6 +769,29 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 	}
 
 	//return classid_pool
+}
+
+func generate_bytecode(ip string) string {
+	//log.Println("current IP is : ", ip)
+	// for Vxlan src 10.1.2.5
+	//sudo tc filter add dev ens3 parent 1:0 bpf bytecode \
+	//"11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 167838213,6 0 0 262144,6 0 0 0," flowi d 1:20
+	part1 := "\"11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 "
+	var temp int64
+	for _, value := range strings.Split(ip, ".") {
+		temp = temp << 8
+		i, err := strconv.Atoi(value)
+		//fmt.Println("value: ", i)
+		if err != nil {
+			log.Fatal("Error in Atoi ")
+		}
+		temp = temp + int64(i)
+	}
+	part2 := strconv.FormatInt(temp, 10)
+	part3 := ",6 0 0 262144,6 0 0 0,\""
+	code := part1 + part2 + part3
+	//log.Println("bytecode is: ", code)
+	return code
 }
 
 func set_pod_veth_inbound_bandwidth(pod_qos map[string]qos_para, pod_info_map map[string]pod_metadata) {
@@ -969,7 +915,7 @@ func set_pod_eth_outbound_bandwidth(pod_qos map[string]qos_para, pod_info_map ma
 	//println("Start to set pod outbound bandwidth in pod...")
 
 	for ip, val := range pod_qos {
-		//println(ip + " outbound: " + val.OutBandWidthMin + ", " + val.OutBandWidthMax)
+		println(ip + " outbound: " + val.OutBandWidthMin + ", " + val.OutBandWidthMax)
 
 		//if ip = "all", skip it
 		if ip == "all" || ip == "default" {
@@ -998,8 +944,8 @@ func set_pod_eth_outbound_bandwidth(pod_qos map[string]qos_para, pod_info_map ma
 				args = []string{"-t", container_pid, "-n", "tc", "qdisc", "add", "dev", "eth0", "root", "tbf", "rate",
 					val.OutBandWidthMax + "mbit", "latency", "50ms", "burst", "100k"}
 				exe_cmd(cmd, args)
-				//println("Add qos on pod", ip, pod_dev)
-				//show_tc_qdisc_in_pod(container_pid, pod_dev)
+				println("Add qos on pod", ip, pod_dev)
+				show_tc_qdisc_in_pod(container_pid, pod_dev)
 
 			case "delete":
 
@@ -1035,266 +981,6 @@ func set_pod_eth_outbound_bandwidth(pod_qos map[string]qos_para, pod_info_map ma
 		}
 	}
 
-}
-
-/*
-Set the TC on the virtual machine,
-Input: Para got from the Etcd.server
-Output:
-Typical setting is as follows:
-	tc qdisc add dev $nic root handle 1: htb default 1001
-	tc class add dev $nic parent 1: classid 1:1 htb rate 10mbit ceil 10mbit
-	tc class add dev $nic parent 1:1 classid 1:10 htb rate 1mbit ceil 2mbit prio 0
-	tc class add dev $nic parent 1:1 classid 1:1001 htb rate 8mbit ceil 8mbit prio 3
-	tc filter add dev $nic parent 1: protocol ip prio 0 u32 match ip dst 0.0.0.0/0 flowid 1:1
-	tc filter add dev $nic parent 1:1 protocol ip prio 0 u32 match ip dst 10.0.3.153/32 flowid 1:10
-*/
-func Set_vm_outbound_bandwidth(intf_name string, pod_qos map[string]qos_para, pod_info_map map[string]pod_metadata) {
-	log.Println("Start to set TC policy on Virtual machine")
-
-	//get the sum of pod bandwidth
-	node_outbound_bandwidth := node_default_inbound_bandwidth + "mbit"
-	ip := ""
-	action := ""
-
-	// First, find out the 'all' policy and then setup it
-	ip = "all"
-	if _, ok := pod_qos[ip]; ok {
-		node_ip := net.ParseIP(pod_qos[ip].NodeIP)
-		// check whether the policy is for this virtual machine
-		if vm_ip.Equal(node_ip) {
-			//log.Println("That's the correct VM to set")
-			node_outbound_bandwidth = pod_qos[ip].InBandWidthMax
-			action = pod_qos[ip].Action
-		} else {
-			//log.Println("Not the correct VM, Ignore")
-		}
-	}
-	switch action {
-	case "add":
-		//Firstly, delete the tc qdisc on vm interface, tc qdisc del dev br root
-		cmd := "tc"
-		args := []string{"qdisc", "del", "dev", intf_name, "root"}
-		exe_cmd(cmd, args)
-		//set tc qdisc htb root
-		cmd = "tc"
-		args = []string{"qdisc", "add", "dev", intf_name, "root", "handle", htb_root_handle, "htb", "default", htb_default_classid}
-		exe_cmd(cmd, args)
-		//set tc class htb 1:1
-		//tc class add dev $nic parent 1: classid 1:1 htb rate 10mbit ceil 10mbit
-		rate := node_outbound_bandwidth + "mbit"
-		cmd = "tc"
-		args = []string{"class", "add", "dev", intf_name, "parent", htb_root_handle, "classid", htb_root_classid, "htb", "rate", rate, "ceil", rate}
-		exe_cmd(cmd, args)
-	case "delete":
-		//log.Println("Delete pod", ip)
-		rate := node_outbound_bandwidth + "mbit"
-		cmd := "tc"
-		args := []string{"class", "del", "dev", intf_name, "parent", htb_root_handle, "classid", htb_root_classid, "htb", "rate", rate, "ceil", rate}
-		exe_cmd(cmd, args)
-	case "change":
-		rate := node_outbound_bandwidth + "mbit"
-		cmd := "tc"
-		args := []string{"class", "change", "dev", intf_name, "parent", htb_root_handle, "classid", htb_root_classid, "htb", "rate", rate, "ceil", rate}
-		exe_cmd(cmd, args)
-	case "":
-		println("No change on VM :", vm_ip)
-	default:
-	}
-
-	//Then configure the default class
-	ip = "default"
-	action = ""
-	prio := ""
-	rate := pod_default_inbound_min + "mbit"
-	ceil := pod_default_inbound_max + "mbit"
-
-	if _, ok := pod_qos[ip]; ok {
-		node_ip := net.ParseIP(pod_qos[ip].NodeIP)
-		// check whether the same ip
-		if vm_ip.Equal(node_ip) {
-			//log.Println("That's it, the correct VM")
-			rate = pod_qos[ip].InBandWidthMin + "mbit"
-			ceil = pod_qos[ip].InBandWidthMax + "mbit"
-			action = pod_qos[ip].Action
-			prio = pod_qos[ip].PodPriority
-		}
-	}
-	/*
-		htb_default_classid = "8001"
-		htb_root_handle = "1:"
-		htb_root_classid = "1:1"
-	*/
-	htb_default_classid_full := htb_root_handle + htb_default_classid
-	switch action {
-	case "add":
-		cmd := "tc"
-		args := []string{"class", "add", "dev", intf_name, "parent", htb_root_classid, "classid", htb_default_classid_full, "htb", "rate", rate, "ceil", ceil, "prio", prio}
-		exe_cmd(cmd, args)
-	case "delete":
-		//log.Println("Delete pod", ip)
-		cmd := "tc"
-		args := []string{"class", "del", "dev", intf_name, "parent", htb_root_classid, "classid", htb_default_classid_full, "htb", "rate", rate, "ceil", ceil}
-		exe_cmd(cmd, args)
-	case "change":
-		cmd := "tc"
-		args := []string{"class", "change", "dev", intf_name, "parent", htb_root_classid, "classid", htb_default_classid_full, "htb", "rate", rate, "ceil", ceil}
-		exe_cmd(cmd, args)
-	case "":
-		println("Not change Qos on pod", ip)
-	default:
-
-	}
-
-	//set other class and filters
-	set_vm_outbound_bandwidth_class_and_filter(intf_name, pod_qos, pod_info_map)
-
-	//show tc configuration
-	log.Println("Current qdisc, class and filter configuration is: ")
-	show_tc_qdisc(intf_name)
-	show_tc_class(intf_name)
-	show_tc_filter(intf_name, htb_root_handle)
-	show_tc_filter(intf_name, htb_root_classid)
-
-}
-
-func set_vm_outbound_bandwidth_class_and_filter(intf_name string, pod_qos map[string]qos_para,
-	pod_info_map map[string]pod_metadata) {
-
-	for ip, val := range pod_qos {
-		//skip the 'all' and 'default' class
-		if ip == "all" || ip == "default" {
-			continue
-		}
-		rate := val.InBandWidthMin + "mbit"
-		ceil := val.InBandWidthMax + "mbit"
-		prio := val.PodPriority
-		action := " "
-
-		node_ip := net.ParseIP(pod_qos[ip].NodeIP)
-		// check whether the same ip
-		if vm_ip.Equal(node_ip) {
-			//log.Println("That's it, the correct VM")
-			action = val.Action
-		}
-		switch action {
-		case "add":
-			classid := get_classid(classid_pool_vm)
-			classid_pool_vm = dec_classid_pool(classid_pool_vm)
-			cur_classid := htb_root_handle + strconv.Itoa(classid)
-			// add class
-			cmd := "tc"
-			args := []string{"class", "add", "dev", intf_name, "parent", htb_root_classid, "classid",
-				cur_classid, "htb", "rate", rate, "ceil", ceil, "prio", prio}
-			exe_cmd(cmd, args)
-
-			//filter cmd is "sudo tc filter add dev ens3 parent 1:0 bpf bytecode \"11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 167838213,6 0 0 262144,6 0 0 0,\" flowid 1:100"
-			// get the byte code
-			bytecode := generate_bytecode(ip)
-			filterCmd := "tc filter add dev " + string(intf_name) + " parent " + string(htb_root_classid) + " prio " + string(prio) + " bpf bytecode " + bytecode + " flowid " + string(cur_classid)
-			exe_cmd_full(filterCmd)
-
-			//get filter pref,  What's this??
-			cmd = "tc"
-			args = []string{"filter", "show", "dev", intf_name, "parent", htb_root_classid}
-			output := exe_cmd(cmd, args)
-			//log.Println("Show filter:", output)
-
-			var pref string
-			for _, line := range strings.Split(output, "\n") {
-
-				if strings.Contains(line, cur_classid) {
-					pref = strings.Split(line, " ")[4]
-				}
-			}
-
-			//update classid in pod_info_map
-			if _, ok := pod_info_map[ip]; ok {
-				pod_meta := pod_info_map[ip]
-				pod_meta.classid = classid
-				pod_meta.pref = pref
-				//log.Print(pod_meta)
-				delete(pod_info_map, ip)
-				pod_info_map[ip] = pod_meta
-				//fmt.Print("pod info:", pod_info_map[ip])
-			} else {
-				println("can not find in pod info map.", ip)
-			}
-
-		case "delete":
-			if _, ok := pod_info_map[ip]; ok {
-				classid := pod_info_map[ip].classid
-				cur_classid := htb_root_handle + strconv.Itoa(classid)
-				pref := pod_info_map[ip].pref
-				log.Println("Delete pod filter on", cur_classid, intf_name, ip, pref)
-
-				cmd := "tc"
-				args := []string{"filter", "del", "dev", intf_name, "parent", htb_root_classid, "prio", pref}
-				exe_cmd(cmd, args)
-
-				log.Println("Delete pod class on", cur_classid, intf_name, ip, pref)
-				cmd = "tc"
-				args = []string{"class", "del", "dev", intf_name, "parent", htb_root_classid, "classid",
-					cur_classid, "htb", "rate", rate, "ceil", ceil, "prio", prio}
-				exe_cmd(cmd, args)
-
-				classid_pool_vm = free_classid(classid_pool_vm, classid)
-
-				pod_meta := pod_info_map[ip]
-				pod_meta.classid = 0
-				pod_meta.pref = "0"
-				pod_info_map[ip] = pod_meta
-				//fmt.Print(pod_info_map[ip])
-			} else {
-				println("can not find in pod info map.", ip)
-			}
-
-		case "change":
-			classid := pod_info_map[ip].classid
-			cur_classid := htb_root_handle + strconv.Itoa(classid)
-			println("change pod class on", cur_classid, intf_name, ip)
-
-			cmd := "tc"
-			args := []string{"class", "change", "dev", intf_name, "parent", htb_root_classid, "classid",
-				cur_classid, "htb", "rate", rate, "ceil", ceil, "prio", prio}
-			exe_cmd(cmd, args)
-
-		case "":
-			println("Not change Qos on pod", ip)
-
-		default:
-
-		}
-
-		if len(classid_pool_vm) == 0 {
-			println("Error classid pool is empty. Cannot set pod bridge inbound bandwidth class and filter.")
-			break
-		}
-	}
-
-	//return classid_pool_vm
-}
-func generate_bytecode(ip string) string {
-	//log.Println("current IP is : ", ip)
-	// for Vxlan src 10.1.2.5
-	//sudo tc filter add dev ens3 parent 1:0 bpf bytecode \
-	//"11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 167838213,6 0 0 262144,6 0 0 0," flowi d 1:20
-	part1 := "\"11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 "
-	var temp int64
-	for _, value := range strings.Split(ip, ".") {
-		temp = temp << 8
-		i, err := strconv.Atoi(value)
-		//fmt.Println("value: ", i)
-		if err != nil {
-			log.Fatal("Error in Atoi ")
-		}
-		temp = temp + int64(i)
-	}
-	part2 := strconv.FormatInt(temp, 10)
-	part3 := ",6 0 0 262144,6 0 0 0,\""
-	code := part1 + part2 + part3
-	//log.Println("bytecode is: ", code)
-	return code
 }
 
 //get veth list on the host
@@ -1366,16 +1052,15 @@ func exe_cmd_full(cmd string) {
 
 func exe_cmd(cmd string, args []string) string {
 
-	log.Println("command is ", cmd, " ", args)
+	//fmt.Println("command is ", cmd, " ", args)
 
-	//out, err := exec.Command(cmd, args...).Output()
 	out, err := exec.Command(cmd, args...).Output()
 
 	if err != nil {
 		fmt.Printf("exec cmd error: %s\n", err)
 	}
 
-	//log.Println("exec cmd out: %s\n", out)
+	//fmt.Printf("exec cmd out: %s\n", out)
 
 	s := string(out)
 
@@ -1387,8 +1072,7 @@ func show_tc_qdisc(dev_name string) {
 	//show tc configuration
 	cmd := "tc"
 	args := []string{"qdisc", "show", "dev", dev_name}
-	exe_cmd(cmd, args)
-	//println(exe_cmd(cmd, args))
+	println(exe_cmd(cmd, args))
 
 }
 
@@ -1397,8 +1081,7 @@ func show_tc_class(dev_name string) {
 	//show tc configuration
 	cmd := "tc"
 	args := []string{"class", "show", "dev", dev_name}
-	//println(exe_cmd(cmd, args))
-	exe_cmd(cmd, args)
+	println(exe_cmd(cmd, args))
 
 }
 
@@ -1406,8 +1089,7 @@ func show_tc_qdisc_statistics(dev_name string) {
 
 	cmd := "tc"
 	args := []string{"-s", "qdisc", "show", "dev", dev_name}
-	//println(exe_cmd(cmd, args))
-	exe_cmd(cmd, args)
+	println(exe_cmd(cmd, args))
 
 }
 
@@ -1415,8 +1097,7 @@ func show_tc_class_statistics(dev_name string) {
 
 	cmd := "tc"
 	args := []string{"-s", "class", "show", "dev", dev_name}
-	//println(exe_cmd(cmd, args))
-	exe_cmd(cmd, args)
+	println(exe_cmd(cmd, args))
 
 }
 
@@ -1425,8 +1106,7 @@ func show_tc_qdisc_in_pod(container_pid string, dev_name string) {
 	//show tc configuration
 	cmd := "nsenter"
 	args := []string{"-t", container_pid, "-n", "tc", "qdisc", "show", "dev", dev_name}
-	//println(exe_cmd(cmd, args))
-	exe_cmd(cmd, args)
+	println(exe_cmd(cmd, args))
 
 }
 
@@ -1435,8 +1115,7 @@ func show_tc_class_in_pod(container_pid string, dev_name string) {
 	//show tc configuration
 	cmd := "nsenter"
 	args := []string{"-t", container_pid, "-n", "tc", "class", "show", "dev", dev_name}
-	//println(exe_cmd(cmd, args))
-	exe_cmd(cmd, args)
+	println(exe_cmd(cmd, args))
 
 }
 
@@ -1445,8 +1124,7 @@ func show_tc_qdisc_statistics_in_pod(container_pid string, dev_name string) {
 	//show tc configuration
 	cmd := "nsenter"
 	args := []string{"-t", container_pid, "-n", "tc", "-s", "qdisc", "show", "dev", dev_name}
-	//println(exe_cmd(cmd, args))
-	exe_cmd(cmd, args)
+	println(exe_cmd(cmd, args))
 
 }
 
@@ -1455,8 +1133,7 @@ func show_tc_class_statistics_in_pod(container_pid string, dev_name string) {
 	//show tc configuration
 	cmd := "nsenter"
 	args := []string{"-t", container_pid, "-n", "tc", "-s", "class", "show", "dev", dev_name}
-	//println(exe_cmd(cmd, args))
-	exe_cmd(cmd, args)
+	println(exe_cmd(cmd, args))
 
 }
 
@@ -1465,7 +1142,6 @@ func show_tc_filter(dev_name string, handle string) {
 	//show tc configuration
 	cmd := "tc"
 	args := []string{"filter", "show", "dev", dev_name, "parent", handle}
-	//println(exe_cmd(cmd, args))
-	exe_cmd(cmd, args)
+	println(exe_cmd(cmd, args))
 
 }
