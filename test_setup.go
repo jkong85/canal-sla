@@ -37,6 +37,10 @@ func main() {
 
 	fmt.Println(" ==> clear the ovs bridge if existed")
 	clear_ovs_bridge()
+	fmt.Println(" ==> clear the configuration of Docker0 if existed")
+	clear_vm_config("docker0")
+	fmt.Println(" ==> clear the configuration of Docker0 if existed")
+	clear_vm_config("ens3")
 	fmt.Println(" ==> clear the containers if existed")
 	clear_containers()
 
@@ -84,6 +88,17 @@ func clear_ovs_bridge() {
 		 sudo ovs-vsctl del-br vxbr
 	*/
 	cmd := "ovs-vsctl del-br vxbr"
+	exe_cmd_full(cmd)
+}
+
+func clear_vm_config(dev string) {
+	fmt.Println("start to clear docker0 config of virtual machine")
+	/*
+		# delete the existing first
+		 sudo ovs-vsctl del-br vxbr
+		 sudo tc qdisc del dev docker0 root
+	*/
+	cmd := "sudo tc qdisc del dev " + dev + " root"
 	exe_cmd_full(cmd)
 }
 
