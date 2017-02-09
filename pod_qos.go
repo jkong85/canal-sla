@@ -28,7 +28,7 @@ const (
 	htb_mid_prio                   = "5"
 	htb_low_prio                   = "7"
 	all_ip_traffic                 = "0.0.0.0/0"
-	classid_max                    = 102
+	classid_max                    = 120
 	qos_json_file                  = "qos.json"
 	node_default_inbound_bandwidth = "1000" //1000mbps
 	pod_default_inbound_min        = "100"  //10mbps
@@ -114,6 +114,8 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 		select {
 		case pair := <-events:
 
+			log.Println("Before etcd config, the pod_info_map is", pod_info_map)
+
 			start := time.Now().UnixNano() / 1000000
 			pod_qos := parse_qos_info(etcd_server, key)
 
@@ -121,9 +123,11 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 
 			pod_info_map, cid_pid_map := get_pod_info_map(pod_qos, pod_info_map, cid_pid_map)
 
+			log.Println("Before device config, the pod_info_map is", pod_info_map)
+
 			t2 := time.Now().UnixNano() / 1000000
 			//config pod outbound bandwidth tc qdisc on eth0 in pod
-			//set_pod_eth_outbound_bandwidth(pod_qos, pod_info_map)
+			set_pod_eth_outbound_bandwidth(pod_qos, pod_info_map)
 
 			t3 := time.Now().UnixNano() / 1000000
 			//config pod inbound bandwidth tc qdisc on veth outside
@@ -141,12 +145,16 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 			pod_info_map, cid_pid_map = delete_pod_info_map(pod_qos, pod_info_map, cid_pid_map)
 
 			end := time.Now().UnixNano() / 1000000
-			fmt.Printf("update pod qos %d: update time %d|%d|%d|%d|%d|%d|%d|%d, value changed on key %s: new value len=%d ... \n", count,
+			log.Printf("update pod qos %d: update time %d|%d|%d|%d|%d|%d|%d|%d, value changed on key %s: new value len=%d ... \n", count,
 				t1-start, t2-t1, t3-t2, t4-t3, t5-t4, t6-t5, end-t6, end-start, key, len(pair.Value))
-			fmt.Printf("time to config pod eth %d \n", t3-t2)
-			fmt.Printf("time to config pod veth %d \n", t4-t3)
-			fmt.Printf("time to config br %d \n", t5-t4)
-			fmt.Printf("time to config VM %d \n", t6-t5)
+			log.Printf("time to config pod eth %d \n", t3-t2)
+			log.Printf("time to config pod veth %d \n", t4-t3)
+			log.Printf("time to config br %d \n", t5-t4)
+			log.Printf("time to config VM %d \n", t6-t5)
+			log.Printf("======================================================================")
+			log.Printf("======================================================================")
+			log.Printf("======================================================================")
+
 			count++
 		}
 	}
@@ -231,7 +239,6 @@ func load_pod_qos_local(data qosInput) map[string]qos_para {
 	log.Println("Load pod qos local")
 	pod_qos := map[string]qos_para{}
 
-	println("Start to retrive qos file...")
 	for i := 0; i < len(data); i++ {
 		node_id := data[i]["NodeIP"]
 		pod_id := data[i]["PodID"]
@@ -252,7 +259,7 @@ func load_pod_qos_local(data qosInput) map[string]qos_para {
 			outbandwidth_min, outbandwidth_max, pod_prio, classid}
 	}
 
-	//fmt.Print("pod_qos", pod_qos,"\n")
+	log.Println("pod_qos after load is: ", pod_qos)
 	return pod_qos
 }
 
@@ -260,7 +267,7 @@ func get_pod_info_map(pod_qos map[string]qos_para,
 	pod_info_map map[string]pod_metadata,
 	cid_pid_map map[string]string) (map[string]pod_metadata, map[string]string) {
 
-	println("Start to get pod ip and pid...")
+	println("Start to get pod info ")
 
 	//get containter id list
 	cmd := "docker"
@@ -269,7 +276,7 @@ func get_pod_info_map(pod_qos map[string]qos_para,
 	//fmt.Print(ids)
 
 	if len(pod_info_map) == 0 {
-		println("pod info map is empty, loading pod qos.")
+		log.Println("pod info map is empty, loading pod qos.")
 		for _, container_id := range strings.Split(ids, "\n") {
 
 			//println("container_id:"+container_id+".")
@@ -319,7 +326,6 @@ func get_pod_info_map(pod_qos map[string]qos_para,
 	} else {
 
 		for ip, val := range pod_qos {
-
 			//skip all and default class
 			if ip == "all" || ip == "default" {
 				continue
@@ -328,12 +334,11 @@ func get_pod_info_map(pod_qos map[string]qos_para,
 			action := val.Action
 
 			switch action {
-
 			case "add", "change", "":
-
 				if _, ok := pod_qos[ip]; ok {
 					log.Println("Warning, already have ", ip, " ", pod_qos[ip], " in pod ip pid map.")
 					log.Println("pod qos info of ", ip, " is ", pod_qos[ip])
+					log.Println("pod info map is :", pod_info_map)
 
 				} else {
 					for _, container_id := range strings.Split(ids, "\n") {
@@ -525,7 +530,7 @@ func set_br_inbound_bandwidth(br_name string, pod_qos map[string]qos_para, pod_i
 		exe_cmd(cmd, args)
 
 	case "":
-		println("Not change Qos on pod", ip)
+		log.Println("Not change Qos on pod for ALL ", ip)
 
 	default:
 
@@ -581,7 +586,7 @@ func set_br_inbound_bandwidth(br_name string, pod_qos map[string]qos_para, pod_i
 		exe_cmd(cmd, args)
 
 	case "":
-		log.Println("Not change Qos on pod", ip)
+		log.Println("Not change Qos on pod for DEFAULT", ip)
 
 	default:
 
@@ -619,6 +624,8 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 	pod_info_map map[string]pod_metadata) {
 
 	//println("\nStart to set pod inbound bandwidth class and filter on bridge")
+	log.Println("Start to set br and VM for each class and filters")
+	log.Println("Before set class and filter, the pod_info_map is: ", pod_info_map)
 
 	intf_name := node_dev
 
@@ -762,35 +769,39 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 			}
 
 		case "change":
+			if _, ok := pod_info_map[ip]; ok {
+				log.Println("Before change, the pod_info_map is : ", pod_info_map)
+				classid := pod_info_map[ip].classid
+				cur_classid := htb_root_handle + strconv.Itoa(classid)
+				log.Println("change class on" + br_name + " and current classID is: " + cur_classid)
+				/*
+					config br-int
+				*/
+				cmd := "tc"
+				args := []string{"class", "change", "dev", br_name, "parent", htb_root_classid, "classid",
+					cur_classid, "htb", "rate", rate, "ceil", ceil, "prio", prio}
+				exe_cmd(cmd, args)
 
-			classid := pod_info_map[ip].classid
-			cur_classid := htb_root_handle + strconv.Itoa(classid)
-			log.Println("change class on" + br_name + " and current classID is: " + cur_classid)
-			/*
-				config br-int
-			*/
-			cmd := "tc"
-			args := []string{"class", "change", "dev", br_name, "parent", htb_root_classid, "classid",
-				cur_classid, "htb", "rate", rate, "ceil", ceil, "prio", prio}
-			exe_cmd(cmd, args)
-
-			/*
-				config br-int
-			*/
-			cmd = "tc"
-			args = []string{"class", "change", "dev", intf_name, "parent", htb_root_classid, "classid",
-				cur_classid, "htb", "rate", rate, "ceil", ceil, "prio", prio}
-			exe_cmd(cmd, args)
+				/*
+					config vm
+				*/
+				cmd = "tc"
+				args = []string{"class", "change", "dev", intf_name, "parent", htb_root_classid, "classid",
+					cur_classid, "htb", "rate", rate, "ceil", ceil, "prio", prio}
+				exe_cmd(cmd, args)
+			} else {
+				log.Println("Don't have this item, No change!")
+			}
 
 		case "":
-			println("Not change Qos on pod", ip)
+			log.Println("Not change Qos on VM and br for class and filters on ", ip)
 
 		default:
 
 		}
 
 		if len(classid_pool) == 0 {
-			println("Error classid pool is empty. Cannot set pod bridge inbound bandwidth class and filter.")
+			log.Println("Error classid pool is empty. Cannot set pod bridge inbound bandwidth class and filter.")
 			break
 		}
 	}
