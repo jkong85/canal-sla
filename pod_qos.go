@@ -681,7 +681,9 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 			//filter cmd is "sudo tc filter add dev ens3 parent 1:0 bpf bytecode \"11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 167838213,6 0 0 262144,6 0 0 0,\" flowid 1:100"
 			// get the byte code
 			bytecode := generate_bytecode(ip)
-			filterCmd := "tc filter add dev " + string(intf_name) + " parent " + htb_root_classid + " prio " + string(prio) + " bpf bytecode " + bytecode + " flowid " + cur_classid
+			// filter's prio is different from class filter.
+			// prio of filter means the seqence to check the filter. set 0 here and system will allocate the preference automatically
+			filterCmd := "tc filter add dev " + string(intf_name) + " parent " + htb_root_classid + " prio 0 bpf bytecode " + bytecode + " flowid " + cur_classid
 			exe_cmd_full(filterCmd)
 
 			//get filter pref,
@@ -708,7 +710,7 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 
 				//fmt.Print("pod info:", pod_info_map[ip])
 			} else {
-				println("can not find in pod info map.", ip)
+				log.Println("can not find in pod info map.", ip)
 			}
 
 		case "delete":
@@ -747,7 +749,7 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 					prio = "49152"
 				}
 				cmd = "tc"
-				args = []string{"filter", "del", "dev", intf_name, "parent", htb_root_classid, "prio", prio}
+				args = []string{"filter", "del", "dev", intf_name, "parent", htb_root_classid, "prio", pref}
 				exe_cmd(cmd, args)
 
 				log.Println("delete class on ", intf_name)
