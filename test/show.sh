@@ -7,4 +7,5 @@ echo "=======> show class "
 sudo tc -s -d class show dev $1
 
 echo "=======> show filter "
-sudo tc -s -d filter show dev $1 
+sudo tc -s -d filter show dev $1  parent 1:
+sudo tc -s -d filter show dev $1 parent 1:1

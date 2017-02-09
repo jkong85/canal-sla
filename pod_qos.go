@@ -18,13 +18,12 @@ import (
 )
 
 const (
-	pod_dev             = "eth0"
-	node_dev            = "ens3"    //"eth0"
-	br_int              = "docker0" //"br-int"
-	htb_default_classid = "8001"
-	htb_root_handle     = "1:"
-	//htb_root_classid               = "1:1"
-	htb_root_classid               = "1:0" //changed by Jian Kong
+	pod_dev                        = "eth0"
+	node_dev                       = "ens3"    //"eth0"
+	br_int                         = "docker0" //"br-int"
+	htb_default_classid            = "8001"
+	htb_root_handle                = "1:"
+	htb_root_classid               = "1:1"
 	htb_high_prio                  = "0"
 	htb_mid_prio                   = "5"
 	htb_low_prio                   = "7"
@@ -124,11 +123,11 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 
 			t2 := time.Now().UnixNano() / 1000000
 			//config pod outbound bandwidth tc qdisc on eth0 in pod
-			set_pod_eth_outbound_bandwidth(pod_qos, pod_info_map)
+			//set_pod_eth_outbound_bandwidth(pod_qos, pod_info_map)
 
 			t3 := time.Now().UnixNano() / 1000000
 			//config pod inbound bandwidth tc qdisc on veth outside
-			set_pod_veth_inbound_bandwidth(pod_qos, pod_info_map)
+			//set_pod_veth_inbound_bandwidth(pod_qos, pod_info_map)
 
 			t4 := time.Now().UnixNano() / 1000000
 			set_br_inbound_bandwidth(br_int, pod_qos, pod_info_map)
@@ -229,6 +228,7 @@ func parse_qos_info(etcd_server string, key string) map[string]qos_para {
 
 func load_pod_qos_local(data qosInput) map[string]qos_para {
 
+	log.Println("Load pod qos local")
 	pod_qos := map[string]qos_para{}
 
 	println("Start to retrive qos file...")
@@ -332,11 +332,11 @@ func get_pod_info_map(pod_qos map[string]qos_para,
 			case "add", "change", "":
 
 				if _, ok := pod_qos[ip]; ok {
-					fmt.Print("Warning, already have", ip, pod_qos[ip], "in pod ip pid map.")
+					log.Println("Warning, already have ", ip, " ", pod_qos[ip], " in pod ip pid map.")
+					log.Println("pod qos info of ", ip, " is ", pod_qos[ip])
+
 				} else {
-
 					for _, container_id := range strings.Split(ids, "\n") {
-
 						//println("container_id:"+container_id+".")
 						if container_id == "" {
 							continue
@@ -381,7 +381,6 @@ func get_pod_info_map(pod_qos map[string]qos_para,
 										cid_pid_map[container_id] = container_pid
 									}
 								}
-
 							}
 						}
 					}
@@ -394,8 +393,8 @@ func get_pod_info_map(pod_qos map[string]qos_para,
 		}
 	}
 
-	//fmt.Print("pod_info_map: ", pod_info_map,"\n")
-	//fmt.Print("cid_pid_map: ", cid_pid_map, "\n")
+	log.Println("pod_info_map: ", pod_info_map)
+	log.Println("cid_pid_map: ", cid_pid_map)
 	return pod_info_map, cid_pid_map
 }
 
@@ -492,7 +491,7 @@ func set_br_inbound_bandwidth(br_name string, pod_qos map[string]qos_para, pod_i
 		exe_cmd(cmd, args)
 		//set tc class htb 1:1
 		//tc class add dev $nic parent 1: classid 1:1 htb rate 10mbit ceil 10mbit
-		rate = node_outbound_bandwidth
+		rate = node_outbound_bandwidth + "mbit"
 		cmd = "tc"
 		args = []string{"class", "add", "dev", intf_name, "parent", htb_root_handle, "classid", htb_root_classid, "htb", "rate", rate, "ceil", rate}
 		exe_cmd(cmd, args)
@@ -582,26 +581,37 @@ func set_br_inbound_bandwidth(br_name string, pod_qos map[string]qos_para, pod_i
 		exe_cmd(cmd, args)
 
 	case "":
-		println("Not change Qos on pod", ip)
+		log.Println("Not change Qos on pod", ip)
 
 	default:
 
 	}
 
-	println("set bridge root qdisc and class")
-	//show_tc_qdisc(br_name)
-	//show_tc_class(br_name)
+	log.Println("show bridge root and default qdisc and class")
+	show_tc_qdisc(br_name)
+	show_tc_class(br_name)
+
+	log.Println("show VM root and default qdisc and class")
+	show_tc_qdisc(intf_name)
+	show_tc_class(intf_name)
 
 	//set tc class and filter for each pod
 	set_pod_br_inbound_bandwidth_class_and_filter(br_name, pod_qos, pod_info_map)
 
 	//show tc configuration
-	println("set bridge all qdisc and class")
+	log.Println("show br_int qdisc and class")
 	show_tc_qdisc(br_name)
 	show_tc_class(br_name)
-	println("set bridge filter")
-	//show_tc_filter(br_name, htb_root_handle)
-	//show_tc_filter(br_name, htb_root_classid)
+	log.Println("show br_int filter")
+	show_tc_filter(br_name, htb_root_handle)
+	show_tc_filter(br_name, htb_root_classid)
+
+	log.Println("show VM qdisc and class")
+	show_tc_qdisc(intf_name)
+	show_tc_class(intf_name)
+	log.Println("show VM filter")
+	show_tc_filter(intf_name, htb_root_handle)
+	show_tc_filter(intf_name, htb_root_classid)
 
 }
 
@@ -636,6 +646,8 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 			classid_pool = dec_classid_pool(classid_pool)
 			cur_classid := htb_root_handle + strconv.Itoa(classid)
 
+			log.Println("Add class and filters with current classID: " + cur_classid)
+
 			//println(ip,action," inbound: "+val.InBandWidthMin+", "+val.InBandWidthMax+", "+val.PodPriority, cur_classid)
 
 			cmd := "tc"
@@ -662,7 +674,7 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 			//filter cmd is "sudo tc filter add dev ens3 parent 1:0 bpf bytecode \"11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 167838213,6 0 0 262144,6 0 0 0,\" flowid 1:100"
 			// get the byte code
 			bytecode := generate_bytecode(ip)
-			filterCmd := "tc filter add dev " + string(intf_name) + " parent " + string(htb_root_classid) + " prio " + string(prio) + " bpf bytecode " + bytecode + " flowid " + string(cur_classid)
+			filterCmd := "tc filter add dev " + string(intf_name) + " parent " + htb_root_classid + " prio " + string(prio) + " bpf bytecode " + bytecode + " flowid " + cur_classid
 			exe_cmd_full(filterCmd)
 
 			//get filter pref,
@@ -715,15 +727,26 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 
 				/*
 					delete VM interface
+					sudo tc filter del dev ens3 parent 1: prio 1
+					sudo tc class del dev ens3 parent 1:1 classid 1:95
+					note: there is a different with br-int that the prio and pref
 				*/
+				log.Println("delete filter on ", intf_name)
+				/*
+					when prio = 0, the pref in show filter is 49152
+				*/
+				if prio == "0" {
+					log.Println("change prio 0 to pref 49152")
+					prio = "49152"
+				}
 				cmd = "tc"
-				args = []string{"filter", "del", "dev", intf_name, "parent", htb_root_classid, "prio", pref}
+				args = []string{"filter", "del", "dev", intf_name, "parent", htb_root_classid, "prio", prio}
 				exe_cmd(cmd, args)
 
-				log.Println("Delete pod class on", cur_classid, intf_name, ip, pref)
+				log.Println("delete class on ", intf_name)
 				cmd = "tc"
 				args = []string{"class", "del", "dev", intf_name, "parent", htb_root_classid, "classid",
-					cur_classid, "htb", "rate", rate, "ceil", ceil, "prio", prio}
+					cur_classid}
 				exe_cmd(cmd, args)
 
 				// update classid_pool
@@ -735,14 +758,14 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 				pod_info_map[ip] = pod_meta
 				//fmt.Print(pod_info_map[ip])
 			} else {
-				println("can not find in pod info map.", ip)
+				log.Println("Can NOT find the config for " + ip + " in pod info map.")
 			}
 
 		case "change":
 
 			classid := pod_info_map[ip].classid
 			cur_classid := htb_root_handle + strconv.Itoa(classid)
-			println("change pod class on", cur_classid, br_name, ip)
+			log.Println("change class on" + br_name + " and current classID is: " + cur_classid)
 			/*
 				config br-int
 			*/
@@ -970,7 +993,7 @@ func set_pod_eth_outbound_bandwidth(pod_qos map[string]qos_para, pod_info_map ma
 				show_tc_qdisc_in_pod(container_pid, pod_dev)
 
 			case "":
-				//println("Not change Qos on pod", ip, pod_dev)
+				log.Println("Not change Qos on pod", ip, pod_dev)
 
 			default:
 
@@ -1045,13 +1068,13 @@ func get_intf_ipaddress(intf_name string) net.IP {
 }
 
 func exe_cmd_full(cmd string) {
-	log.Println("CMD is : ", cmd)
+	log.Println("command is : ", cmd)
 	out, err := exec.Command("sh", "-c", cmd).Output()
 	//_, err := exec.Command("sh", "-c", cmd).Output()
 	if err != nil {
 		log.Println("Error to exec CMD", cmd)
 	}
-	log.Println("Output of CMD :", string(out))
+	log.Println("Output of command:", string(out))
 }
 
 func exe_cmd(cmd string, args []string) string {
