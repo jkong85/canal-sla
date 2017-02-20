@@ -692,6 +692,10 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 			exe_cmd(cmd, args)
 
 			//filter cmd is "sudo tc filter add dev ens3 parent 1:0 bpf bytecode \"11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 167838213,6 0 0 262144,6 0 0 0,\" flowid 1:100"
+
+			//This is no VNI check, but check UDP port
+			// 10,40 0 0 12,21 0 7 2048,48 0 0 23,21 0 5 17,40 0 0 36,21 0 3 4789,32 0 0 76,21 0 1 168431877,6 0 0 262144,6 0 0 0,
+
 			// get the byte code
 			bytecode := generate_bytecode(ip)
 			// filter's prio is different from class filter.
@@ -815,8 +819,12 @@ func generate_bytecode(ip string) string {
 	//log.Println("current IP is : ", ip)
 	// for Vxlan src 10.1.2.5
 	//sudo tc filter add dev ens3 parent 1:0 bpf bytecode \
+	// This is with VNI check
 	//"11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 167838213,6 0 0 262144,6 0 0 0," flowi d 1:20
-	part1 := "\"11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 "
+	//part1 := "\"11,40 0 0 12,21 0 8 2048,48 0 0 23,21 0 6 17,40 0 0 42,69 1 0 2048,6 0 0 0,32 0 0 76,21 0 1 "
+	//This is no VNI check, but check UDP port
+	// 10,40 0 0 12,21 0 7 2048,48 0 0 23,21 0 5 17,40 0 0 36,21 0 3 4789,32 0 0 76,21 0 1 168431877,6 0 0 262144,6 0 0 0,
+	part1 := "\"10,40 0 0 12,21 0 7 2048,48 0 0 23,21 0 5 17,40 0 0 36,21 0 3 4789,32 0 0 76,21 0 1 "
 	var temp int64
 	for _, value := range strings.Split(ip, ".") {
 		temp = temp << 8
