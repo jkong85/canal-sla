@@ -670,6 +670,19 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 				"prio", "0", "u32", "match", "ip", "dst", ip + "/32", "flowid", cur_classid}
 			exe_cmd(cmd, args)
 
+			//get filter pref,
+			cmd = "tc"
+			args = []string{"filter", "show", "dev", br_name, "parent", htb_root_classid}
+			output := exe_cmd(cmd, args)
+
+			var pref string
+			for _, line := range strings.Split(output, "\n") {
+
+				if strings.Contains(line, cur_classid) {
+					pref = strings.Split(line, " ")[4]
+				}
+			}
+
 			/*
 				config VM interface
 			*/
@@ -683,21 +696,8 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 			bytecode := generate_bytecode(ip)
 			// filter's prio is different from class filter.
 			// prio of filter means the seqence to check the filter. set 0 here and system will allocate the preference automatically
-			filterCmd := "tc filter add dev " + string(intf_name) + " parent " + htb_root_classid + " prio 0 bpf bytecode " + bytecode + " flowid " + cur_classid
+			filterCmd := "tc filter add dev " + string(intf_name) + " parent " + htb_root_classid + " prio " + pref + " bpf bytecode " + bytecode + " flowid " + cur_classid
 			exe_cmd_full(filterCmd)
-
-			//get filter pref,
-			cmd = "tc"
-			args = []string{"filter", "show", "dev", br_name, "parent", htb_root_classid}
-			output := exe_cmd(cmd, args)
-
-			var pref string
-			for _, line := range strings.Split(output, "\n") {
-
-				if strings.Contains(line, cur_classid) {
-					pref = strings.Split(line, " ")[4]
-				}
-			}
 
 			//update classid in pod_info_map
 			if _, ok := pod_info_map[ip]; ok {
