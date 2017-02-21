@@ -700,7 +700,8 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 			bytecode := generate_bytecode(ip)
 			// filter's prio is different from class filter.
 			// prio of filter means the seqence to check the filter. set 0 here and system will allocate the preference automatically
-			filterCmd := "tc filter add dev " + string(intf_name) + " parent " + htb_root_classid + " prio " + pref + " bpf bytecode " + bytecode + " flowid " + cur_classid
+			// Take care, here I use 'htp_root_handle' (1:0) while not 'htb_root_classid'(1:1), or the traffic cannot match the filter
+			filterCmd := "tc filter add dev " + string(intf_name) + " parent " + htb_root_handle + " prio " + pref + " bpf bytecode " + bytecode + " flowid " + cur_classid
 			exe_cmd_full(filterCmd)
 
 			//update classid in pod_info_map
@@ -745,15 +746,10 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 					note: there is a different with br-int that the prio and pref
 				*/
 				log.Println("delete filter on ", intf_name)
-				/*
-					when prio = 0, the pref in show filter is 49152
-				*/
-				if prio == "0" {
-					log.Println("change prio 0 to pref 49152")
-					prio = "49152"
-				}
+
+				// Take care of 'htb_root_handle', not 'htb_root_classid' here
 				cmd = "tc"
-				args = []string{"filter", "del", "dev", intf_name, "parent", htb_root_classid, "prio", pref}
+				args = []string{"filter", "del", "dev", intf_name, "parent", htb_root_handle, "prio", pref}
 				exe_cmd(cmd, args)
 
 				log.Println("delete class on ", intf_name)
@@ -791,8 +787,9 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 				/*
 					config vm
 				*/
+				// take care of parent, use 'htb_root_handle' while not 'htb_root_classid'
 				cmd = "tc"
-				args = []string{"class", "change", "dev", intf_name, "parent", htb_root_classid, "classid",
+				args = []string{"class", "change", "dev", intf_name, "parent", htb_root_handle, "classid",
 					cur_classid, "htb", "rate", rate, "ceil", ceil, "prio", prio}
 				exe_cmd(cmd, args)
 			} else {
