@@ -204,8 +204,7 @@ func main() {
 
 	mac := intf.HardwareAddr
 
-	key := "/" + string(mac)
-	key = "kj"
+	key := "/" + fmt.Sprintf("%x", mac)
 
 	resp, err := kapi.Set(context.Background(), key, string(qos_encode), nil)
 	if err != nil {

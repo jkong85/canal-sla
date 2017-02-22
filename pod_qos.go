@@ -104,9 +104,8 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 
 	mac := intf.HardwareAddr
 
-	key := "/" + string(mac)
-	key = "kj"
-	//println("key: ", key)
+	key := "/" + fmt.Sprintf("%x", mac)
+	log.Println("key: ", key)
 
 	stopCh := make(<-chan struct{})
 	events, err := kv.Watch(key, stopCh)
