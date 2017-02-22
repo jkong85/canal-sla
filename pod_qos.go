@@ -341,6 +341,7 @@ func get_pod_info_map(pod_qos map[string]qos_para,
 					log.Println("pod info map is :", pod_info_map)
 
 				} else {
+					log.Println("There is no such Pod IP in pod_info_map")
 					for _, container_id := range strings.Split(ids, "\n") {
 						//println("container_id:"+container_id+".")
 						if container_id == "" {
@@ -767,12 +768,12 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 				pod_info_map[ip] = pod_meta
 				//fmt.Print(pod_info_map[ip])
 			} else {
-				log.Println("Can NOT find the config for " + ip + " in pod info map.")
+				log.Println("Do nothing for delete action because Can NOT find the config for " + ip + " in pod info map.")
 			}
 
 		case "change":
+			log.Println("Before change, the pod_info_map is : ", pod_info_map)
 			if _, ok := pod_info_map[ip]; ok {
-				log.Println("Before change, the pod_info_map is : ", pod_info_map)
 				classid := pod_info_map[ip].classid
 				cur_classid := htb_root_handle + strconv.Itoa(classid)
 				log.Println("change class on" + br_name + " and current classID is: " + cur_classid)
