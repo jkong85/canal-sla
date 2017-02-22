@@ -105,6 +105,7 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 	mac := intf.HardwareAddr
 
 	key := "/" + string(mac)
+	key = "kj"
 	//println("key: ", key)
 
 	stopCh := make(<-chan struct{})
@@ -114,6 +115,8 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 		select {
 		case pair := <-events:
 
+			log.Println("======================================================================")
+			log.Printf("Start the qos configuraton : %d", count)
 			log.Println("Before etcd config, the pod_info_map is", pod_info_map)
 
 			start := time.Now().UnixNano() / 1000000
@@ -122,7 +125,6 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 			t1 := time.Now().UnixNano() / 1000000
 
 			pod_info_map, cid_pid_map := get_pod_info_map(pod_qos, pod_info_map, cid_pid_map)
-
 			log.Println("Before device config, the pod_info_map is", pod_info_map)
 
 			t2 := time.Now().UnixNano() / 1000000
@@ -142,7 +144,9 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 
 			t6 := time.Now().UnixNano() / 1000000
 
+			log.Println("after device config, the pod_info_map is", pod_info_map)
 			pod_info_map, cid_pid_map = delete_pod_info_map(pod_qos, pod_info_map, cid_pid_map)
+			log.Println("Finally, the pod_info_map is", pod_info_map)
 
 			end := time.Now().UnixNano() / 1000000
 			log.Printf("update pod qos %d: update time %d|%d|%d|%d|%d|%d|%d|%d, value changed on key %s: new value len=%d ... \n", count,
@@ -151,9 +155,7 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 			log.Printf("time to config pod veth %d \n", t4-t3)
 			log.Printf("time to config br %d \n", t5-t4)
 			log.Printf("time to config VM %d \n", t6-t5)
-			log.Printf("======================================================================")
-			log.Printf("======================================================================")
-			log.Printf("======================================================================")
+			log.Printf("\n \n	")
 
 			count++
 		}
@@ -267,7 +269,7 @@ func get_pod_info_map(pod_qos map[string]qos_para,
 	pod_info_map map[string]pod_metadata,
 	cid_pid_map map[string]string) (map[string]pod_metadata, map[string]string) {
 
-	println("Start to get pod info ")
+	log.Println("Start to get pod info ")
 
 	//get containter id list
 	cmd := "docker"
@@ -324,7 +326,6 @@ func get_pod_info_map(pod_qos map[string]qos_para,
 			}
 		}
 	} else {
-
 		for ip, val := range pod_qos {
 			//skip all and default class
 			if ip == "all" || ip == "default" {
@@ -339,21 +340,18 @@ func get_pod_info_map(pod_qos map[string]qos_para,
 					log.Println("Warning, already have ", ip, " ", pod_qos[ip], " in pod ip pid map.")
 					log.Println("pod qos info of ", ip, " is ", pod_qos[ip])
 					log.Println("pod info map is :", pod_info_map)
-
 				} else {
 					log.Println("There is no such Pod IP in pod_info_map")
 					for _, container_id := range strings.Split(ids, "\n") {
 						//println("container_id:"+container_id+".")
 						if container_id == "" {
+							// there is no pod existing for the qos policy, ignore it
 							continue
 						}
 
 						if _, ok := cid_pid_map[container_id]; ok {
-
 							continue
-
 						} else {
-
 							//get pid and save into pod_info_map
 							//get container pid
 							cmd := "docker"
@@ -367,7 +365,6 @@ func get_pod_info_map(pod_qos map[string]qos_para,
 							ifconfig_output := exe_cmd(cmd, args)
 
 							for _, line := range strings.Split(ifconfig_output, "\n") {
-
 								if strings.Contains(line, "inet addr") {
 									container_ip := strings.Split(strings.Split(line, ":")[1], " ")[0]
 									//fmt.Printf("container id: %s; pid: %s; ip addr: %s\n", container_id, container_pid, container_ip)
