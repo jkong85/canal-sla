@@ -1,0 +1,13 @@
+ ldh        [12]
+ jneq       #0x800,fail
+ ldb        [23]
+ jneq       #0x11,fail 
+ ldh        [42]
+ jset       #0x0800, pass
+ ret        #0
+ pass:
+    ld      [76]
+    jneq    #0x0a0a1105,fail
+    ret     #262144
+ fail:   
+    ret     #0
