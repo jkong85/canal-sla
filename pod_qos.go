@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	//"io/ioutil"
 	"github.com/coreos/etcd/client"
 	"github.com/docker/libkv"
 	"github.com/docker/libkv/store"
@@ -1024,11 +1025,11 @@ func get_veth_list() map[int]string {
 	}
 	for _, f := range intf_list {
 		// for flannel, it uses 'veth'
-		veth_key := "_l"
-		if strings.Contains(f.Name, veth_key) {
-			result[f.Index] = f.Name
-			log.Println(f.Index, f.Name)
-		}
+		//veth_key := "_l"
+		//if strings.Contains(f.Name, veth_key) {
+		result[f.Index] = f.Name
+		log.Println(f.Index, f.Name)
+		//}
 	}
 	return result
 }

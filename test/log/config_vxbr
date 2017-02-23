@@ -1,0 +1,1009 @@
+Current HTB configuration is: 
+=======> show qdisc
+qdisc htb 1: root refcnt 2 r2q 10 default 8001 direct_packets_stat 0 ver 3.17 direct_qlen 1
+ Sent 194 bytes 2 pkt (dropped 0, overlimits 0 requeues 0) 
+ backlog 0b 0p requeues 0 
+=======> show class 
+class htb 1:101 parent 1:1 prio 5 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:100 parent 1:1 prio 0 quantum 200000 rate 500Mbit ceil 500Mbit linklayer ethernet burst 1500b/1 mpu 0b overhead 0b cburst 1500b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 390 ctokens: 390
+
+class htb 1:103 parent 1:1 prio 5 quantum 125000 rate 10Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 20000 ctokens: 2000
+
+class htb 1:102 parent 1:1 prio 5 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:105 parent 1:1 prio 7 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:104 parent 1:1 prio 7 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:107 parent 1:1 prio 7 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:106 parent 1:1 prio 0 quantum 200000 rate 500Mbit ceil 500Mbit linklayer ethernet burst 1500b/1 mpu 0b overhead 0b cburst 1500b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 390 ctokens: 390
+
+class htb 1:109 parent 1:1 prio 5 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:108 parent 1:1 prio 5 quantum 125000 rate 10Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 20000 ctokens: 2000
+
+class htb 1:110 parent 1:1 prio 5 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:111 parent 1:1 prio 0 quantum 200000 rate 1Gbit ceil 1Gbit linklayer ethernet burst 1375b/1 mpu 0b overhead 0b cburst 1375b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 187 ctokens: 187
+
+class htb 1:1 root rate 100Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 7 
+ Sent 194 bytes 2 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1866 ctokens: 1866
+
+class htb 1:112 parent 1:1 prio 0 quantum 200000 rate 500Mbit ceil 500Mbit linklayer ethernet burst 1500b/1 mpu 0b overhead 0b cburst 1500b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 390 ctokens: 390
+
+class htb 1:113 parent 1:1 prio 5 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:114 parent 1:1 prio 7 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:115 parent 1:1 prio 5 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:116 parent 1:1 prio 0 quantum 200000 rate 500Mbit ceil 500Mbit linklayer ethernet burst 1500b/1 mpu 0b overhead 0b cburst 1500b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 390 ctokens: 390
+
+class htb 1:117 parent 1:1 prio 5 quantum 125000 rate 10Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 20000 ctokens: 2000
+
+class htb 1:118 parent 1:1 prio 7 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:119 parent 1:1 prio 7 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:33 parent 1:1 prio 7 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:32 parent 1:1 prio 0 quantum 200000 rate 1Gbit ceil 1Gbit linklayer ethernet burst 1375b/1 mpu 0b overhead 0b cburst 1375b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 187 ctokens: 187
+
+class htb 1:31 parent 1:1 prio 0 quantum 200000 rate 1Gbit ceil 1Gbit linklayer ethernet burst 1375b/1 mpu 0b overhead 0b cburst 1375b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 187 ctokens: 187
+
+class htb 1:120 parent 1:1 prio 0 quantum 200000 rate 1Gbit ceil 1Gbit linklayer ethernet burst 1375b/1 mpu 0b overhead 0b cburst 1375b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 187 ctokens: 187
+
+class htb 1:30 parent 1:1 prio 5 quantum 125000 rate 10Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 20000 ctokens: 2000
+
+class htb 1:37 parent 1:1 prio 7 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:36 parent 1:1 prio 5 quantum 125000 rate 10Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 20000 ctokens: 2000
+
+class htb 1:35 parent 1:1 prio 7 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:34 parent 1:1 prio 5 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:39 parent 1:1 prio 5 quantum 125000 rate 10Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 20000 ctokens: 2000
+
+class htb 1:38 parent 1:1 prio 0 quantum 200000 rate 500Mbit ceil 500Mbit linklayer ethernet burst 1500b/1 mpu 0b overhead 0b cburst 1500b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 390 ctokens: 390
+
+class htb 1:22 parent 1:1 prio 0 quantum 200000 rate 500Mbit ceil 500Mbit linklayer ethernet burst 1500b/1 mpu 0b overhead 0b cburst 1500b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 390 ctokens: 390
+
+class htb 1:23 parent 1:1 prio 7 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:26 parent 1:1 prio 5 quantum 125000 rate 10Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 20000 ctokens: 2000
+
+class htb 1:27 parent 1:1 prio 0 quantum 200000 rate 1Gbit ceil 1Gbit linklayer ethernet burst 1375b/1 mpu 0b overhead 0b cburst 1375b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 187 ctokens: 187
+
+class htb 1:24 parent 1:1 prio 0 quantum 200000 rate 1Gbit ceil 1Gbit linklayer ethernet burst 1375b/1 mpu 0b overhead 0b cburst 1375b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 187 ctokens: 187
+
+class htb 1:25 parent 1:1 prio 5 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:28 parent 1:1 prio 0 quantum 200000 rate 500Mbit ceil 500Mbit linklayer ethernet burst 1500b/1 mpu 0b overhead 0b cburst 1500b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 390 ctokens: 390
+
+class htb 1:29 parent 1:1 prio 7 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:55 parent 1:1 prio 0 quantum 200000 rate 1Gbit ceil 1Gbit linklayer ethernet burst 1375b/1 mpu 0b overhead 0b cburst 1375b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 187 ctokens: 187
+
+class htb 1:54 parent 1:1 prio 0 quantum 200000 rate 1Gbit ceil 1Gbit linklayer ethernet burst 1375b/1 mpu 0b overhead 0b cburst 1375b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 187 ctokens: 187
+
+class htb 1:57 parent 1:1 prio 0 quantum 200000 rate 1Gbit ceil 1Gbit linklayer ethernet burst 1375b/1 mpu 0b overhead 0b cburst 1375b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 187 ctokens: 187
+
+class htb 1:56 parent 1:1 prio 5 quantum 125000 rate 10Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 20000 ctokens: 2000
+
+class htb 1:51 parent 1:1 prio 5 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:50 parent 1:1 prio 7 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:53 parent 1:1 prio 0 quantum 200000 rate 500Mbit ceil 500Mbit linklayer ethernet burst 1500b/1 mpu 0b overhead 0b cburst 1500b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 390 ctokens: 390
+
+class htb 1:52 parent 1:1 prio 5 quantum 125000 rate 10Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 20000 ctokens: 2000
+
+class htb 1:59 parent 1:1 prio 5 quantum 125000 rate 10Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 20000 ctokens: 2000
+
+class htb 1:58 parent 1:1 prio 7 quantum 200000 rate 20Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 10000 ctokens: 2000
+
+class htb 1:44 parent 1:1 prio 0 quantum 200000 rate 500Mbit ceil 500Mbit linklayer ethernet burst 1500b/1 mpu 0b overhead 0b cburst 1500b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 390 ctokens: 390
+
+class htb 1:45 parent 1:1 prio 0 quantum 200000 rate 1Gbit ceil 1Gbit linklayer ethernet burst 1375b/1 mpu 0b overhead 0b cburst 1375b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 187 ctokens: 187
+
+class htb 1:46 parent 1:1 prio 0 quantum 200000 rate 1Gbit ceil 1Gbit linklayer ethernet burst 1375b/1 mpu 0b overhead 0b cburst 1375b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 187 ctokens: 187
+
+class htb 1:47 parent 1:1 prio 0 quantum 200000 rate 500Mbit ceil 500Mbit linklayer ethernet burst 1500b/1 mpu 0b overhead 0b cburst 1500b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 390 ctokens: 390
+
+class htb 1:40 parent 1:1 prio 0 quantum 200000 rate 1Gbit ceil 1Gbit linklayer ethernet burst 1375b/1 mpu 0b overhead 0b cburst 1375b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 187 ctokens: 187
+
+class htb 1:41 parent 1:1 prio 5 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:42 parent 1:1 prio 0 quantum 200000 rate 500Mbit ceil 500Mbit linklayer ethernet burst 1500b/1 mpu 0b overhead 0b cburst 1500b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 390 ctokens: 390
+
+class htb 1:43 parent 1:1 prio 7 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:48 parent 1:1 prio 0 quantum 200000 rate 500Mbit ceil 500Mbit linklayer ethernet burst 1500b/1 mpu 0b overhead 0b cburst 1500b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 390 ctokens: 390
+
+class htb 1:49 parent 1:1 prio 5 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:77 parent 1:1 prio 7 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:76 parent 1:1 prio 7 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:75 parent 1:1 prio 5 quantum 125000 rate 10Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 20000 ctokens: 2000
+
+class htb 1:74 parent 1:1 prio 7 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:73 parent 1:1 prio 5 quantum 200000 rate 20Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 10000 ctokens: 2000
+
+class htb 1:72 parent 1:1 prio 5 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:71 parent 1:1 prio 0 quantum 200000 rate 500Mbit ceil 500Mbit linklayer ethernet burst 1500b/1 mpu 0b overhead 0b cburst 1500b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 390 ctokens: 390
+
+class htb 1:70 parent 1:1 prio 0 quantum 200000 rate 1Gbit ceil 1Gbit linklayer ethernet burst 1375b/1 mpu 0b overhead 0b cburst 1375b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 187 ctokens: 187
+
+class htb 1:79 parent 1:1 prio 0 quantum 200000 rate 20Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 10000 ctokens: 2000
+
+class htb 1:78 parent 1:1 prio 5 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:66 parent 1:1 prio 0 quantum 200000 rate 500Mbit ceil 500Mbit linklayer ethernet burst 1500b/1 mpu 0b overhead 0b cburst 1500b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 390 ctokens: 390
+
+class htb 1:67 parent 1:1 prio 5 quantum 125000 rate 10Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 20000 ctokens: 2000
+
+class htb 1:64 parent 1:1 prio 7 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:65 parent 1:1 prio 5 quantum 125000 rate 10Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 20000 ctokens: 2000
+
+class htb 1:62 parent 1:1 prio 0 quantum 200000 rate 1Gbit ceil 1Gbit linklayer ethernet burst 1375b/1 mpu 0b overhead 0b cburst 1375b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 187 ctokens: 187
+
+class htb 1:63 parent 1:1 prio 7 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:60 parent 1:1 prio 5 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:61 parent 1:1 prio 0 quantum 200000 rate 1Gbit ceil 1Gbit linklayer ethernet burst 1375b/1 mpu 0b overhead 0b cburst 1375b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 187 ctokens: 187
+
+class htb 1:68 parent 1:1 prio 0 quantum 200000 rate 1Gbit ceil 1Gbit linklayer ethernet burst 1375b/1 mpu 0b overhead 0b cburst 1375b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 187 ctokens: 187
+
+class htb 1:69 parent 1:1 prio 5 quantum 125000 rate 10Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 20000 ctokens: 2000
+
+class htb 1:99 parent 1:1 prio 0 quantum 200000 rate 500Mbit ceil 500Mbit linklayer ethernet burst 1500b/1 mpu 0b overhead 0b cburst 1500b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 390 ctokens: 390
+
+class htb 1:98 parent 1:1 prio 0 quantum 200000 rate 1Gbit ceil 1Gbit linklayer ethernet burst 1375b/1 mpu 0b overhead 0b cburst 1375b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 187 ctokens: 187
+
+class htb 1:91 parent 1:1 prio 0 quantum 200000 rate 500Mbit ceil 500Mbit linklayer ethernet burst 1500b/1 mpu 0b overhead 0b cburst 1500b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 390 ctokens: 390
+
+class htb 1:90 parent 1:1 prio 5 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:93 parent 1:1 prio 0 quantum 200000 rate 1Gbit ceil 1Gbit linklayer ethernet burst 1375b/1 mpu 0b overhead 0b cburst 1375b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 187 ctokens: 187
+
+class htb 1:92 parent 1:1 prio 5 quantum 125000 rate 10Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 20000 ctokens: 2000
+
+class htb 1:95 parent 1:1 prio 0 quantum 200000 rate 1Gbit ceil 1Gbit linklayer ethernet burst 1375b/1 mpu 0b overhead 0b cburst 1375b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 187 ctokens: 187
+
+class htb 1:94 parent 1:1 prio 5 quantum 125000 rate 10Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 20000 ctokens: 2000
+
+class htb 1:97 parent 1:1 prio 5 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:96 parent 1:1 prio 5 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:88 parent 1:1 prio 7 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:89 parent 1:1 prio 5 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:80 parent 1:1 prio 0 quantum 200000 rate 500Mbit ceil 500Mbit linklayer ethernet burst 1500b/1 mpu 0b overhead 0b cburst 1500b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 390 ctokens: 390
+
+class htb 1:81 parent 1:1 prio 5 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:8001 parent 1:1 prio 0 quantum 125000 rate 10Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 194 bytes 2 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 2 borrowed: 0 giants: 0
+ tokens: 18662 ctokens: 1866
+
+class htb 1:82 parent 1:1 prio 5 quantum 125000 rate 10Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 20000 ctokens: 2000
+
+class htb 1:83 parent 1:1 prio 7 quantum 200000 rate 200Mbit ceil 200Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1000 ctokens: 1000
+
+class htb 1:84 parent 1:1 prio 0 quantum 200000 rate 500Mbit ceil 500Mbit linklayer ethernet burst 1500b/1 mpu 0b overhead 0b cburst 1500b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 390 ctokens: 390
+
+class htb 1:85 parent 1:1 prio 5 quantum 125000 rate 10Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 20000 ctokens: 2000
+
+class htb 1:86 parent 1:1 prio 5 quantum 125000 rate 10Mbit ceil 100Mbit linklayer ethernet burst 1600b/1 mpu 0b overhead 0b cburst 1600b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 20000 ctokens: 2000
+
+class htb 1:87 parent 1:1 prio 0 quantum 200000 rate 500Mbit ceil 500Mbit linklayer ethernet burst 1500b/1 mpu 0b overhead 0b cburst 1500b/1 mpu 0b overhead 0b level 0 
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0) 
+ rate 0bit 0pps backlog 0b 0p requeues 0 
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 390 ctokens: 390
+
+=======> show filter 
+filter protocol ip pref 49054 u32 
+filter protocol ip pref 49054 u32 fh 862: ht divisor 1 
+filter protocol ip pref 49054 u32 fh 862::800 order 2048 key ht 862 bkt 0 flowid 1:22 
+  match 0a010252/ffffffff at 16
+filter protocol ip pref 49055 u32 
+filter protocol ip pref 49055 u32 fh 861: ht divisor 1 
+filter protocol ip pref 49055 u32 fh 861::800 order 2048 key ht 861 bkt 0 flowid 1:23 
+  match 0a01024f/ffffffff at 16
+filter protocol ip pref 49056 u32 
+filter protocol ip pref 49056 u32 fh 860: ht divisor 1 
+filter protocol ip pref 49056 u32 fh 860::800 order 2048 key ht 860 bkt 0 flowid 1:24 
+  match 0a010228/ffffffff at 16
+filter protocol ip pref 49057 u32 
+filter protocol ip pref 49057 u32 fh 85f: ht divisor 1 
+filter protocol ip pref 49057 u32 fh 85f::800 order 2048 key ht 85f bkt 0 flowid 1:25 
+  match 0a01021c/ffffffff at 16
+filter protocol ip pref 49058 u32 
+filter protocol ip pref 49058 u32 fh 85e: ht divisor 1 
+filter protocol ip pref 49058 u32 fh 85e::800 order 2048 key ht 85e bkt 0 flowid 1:26 
+  match 0a010206/ffffffff at 16
+filter protocol ip pref 49059 u32 
+filter protocol ip pref 49059 u32 fh 85d: ht divisor 1 
+filter protocol ip pref 49059 u32 fh 85d::800 order 2048 key ht 85d bkt 0 flowid 1:27 
+  match 0a010264/ffffffff at 16
+filter protocol ip pref 49060 u32 
+filter protocol ip pref 49060 u32 fh 85c: ht divisor 1 
+filter protocol ip pref 49060 u32 fh 85c::800 order 2048 key ht 85c bkt 0 flowid 1:28 
+  match 0a010257/ffffffff at 16
+filter protocol ip pref 49061 u32 
+filter protocol ip pref 49061 u32 fh 85b: ht divisor 1 
+filter protocol ip pref 49061 u32 fh 85b::800 order 2048 key ht 85b bkt 0 flowid 1:29 
+  match 0a01024a/ffffffff at 16
+filter protocol ip pref 49062 u32 
+filter protocol ip pref 49062 u32 fh 85a: ht divisor 1 
+filter protocol ip pref 49062 u32 fh 85a::800 order 2048 key ht 85a bkt 0 flowid 1:30 
+  match 0a010238/ffffffff at 16
+filter protocol ip pref 49063 u32 
+filter protocol ip pref 49063 u32 fh 859: ht divisor 1 
+filter protocol ip pref 49063 u32 fh 859::800 order 2048 key ht 859 bkt 0 flowid 1:31 
+  match 0a01022d/ffffffff at 16
+filter protocol ip pref 49064 u32 
+filter protocol ip pref 49064 u32 fh 858: ht divisor 1 
+filter protocol ip pref 49064 u32 fh 858::800 order 2048 key ht 858 bkt 0 flowid 1:32 
+  match 0a010223/ffffffff at 16
+filter protocol ip pref 49065 u32 
+filter protocol ip pref 49065 u32 fh 857: ht divisor 1 
+filter protocol ip pref 49065 u32 fh 857::800 order 2048 key ht 857 bkt 0 flowid 1:33 
+  match 0a010218/ffffffff at 16
+filter protocol ip pref 49066 u32 
+filter protocol ip pref 49066 u32 fh 856: ht divisor 1 
+filter protocol ip pref 49066 u32 fh 856::800 order 2048 key ht 856 bkt 0 flowid 1:34 
+  match 0a010217/ffffffff at 16
+filter protocol ip pref 49067 u32 
+filter protocol ip pref 49067 u32 fh 855: ht divisor 1 
+filter protocol ip pref 49067 u32 fh 855::800 order 2048 key ht 855 bkt 0 flowid 1:35 
+  match 0a010204/ffffffff at 16
+filter protocol ip pref 49068 u32 
+filter protocol ip pref 49068 u32 fh 854: ht divisor 1 
+filter protocol ip pref 49068 u32 fh 854::800 order 2048 key ht 854 bkt 0 flowid 1:36 
+  match 0a010256/ffffffff at 16
+filter protocol ip pref 49069 u32 
+filter protocol ip pref 49069 u32 fh 853: ht divisor 1 
+filter protocol ip pref 49069 u32 fh 853::800 order 2048 key ht 853 bkt 0 flowid 1:37 
+  match 0a010245/ffffffff at 16
+filter protocol ip pref 49070 u32 
+filter protocol ip pref 49070 u32 fh 852: ht divisor 1 
+filter protocol ip pref 49070 u32 fh 852::800 order 2048 key ht 852 bkt 0 flowid 1:38 
+  match 0a010243/ffffffff at 16
+filter protocol ip pref 49071 u32 
+filter protocol ip pref 49071 u32 fh 851: ht divisor 1 
+filter protocol ip pref 49071 u32 fh 851::800 order 2048 key ht 851 bkt 0 flowid 1:39 
+  match 0a01023d/ffffffff at 16
+filter protocol ip pref 49072 u32 
+filter protocol ip pref 49072 u32 fh 850: ht divisor 1 
+filter protocol ip pref 49072 u32 fh 850::800 order 2048 key ht 850 bkt 0 flowid 1:40 
+  match 0a010237/ffffffff at 16
+filter protocol ip pref 49073 u32 
+filter protocol ip pref 49073 u32 fh 84f: ht divisor 1 
+filter protocol ip pref 49073 u32 fh 84f::800 order 2048 key ht 84f bkt 0 flowid 1:41 
+  match 0a010235/ffffffff at 16
+filter protocol ip pref 49074 u32 
+filter protocol ip pref 49074 u32 fh 84e: ht divisor 1 
+filter protocol ip pref 49074 u32 fh 84e::800 order 2048 key ht 84e bkt 0 flowid 1:42 
+  match 0a010234/ffffffff at 16
+filter protocol ip pref 49075 u32 
+filter protocol ip pref 49075 u32 fh 84d: ht divisor 1 
+filter protocol ip pref 49075 u32 fh 84d::800 order 2048 key ht 84d bkt 0 flowid 1:43 
+  match 0a01021d/ffffffff at 16
+filter protocol ip pref 49076 u32 
+filter protocol ip pref 49076 u32 fh 84c: ht divisor 1 
+filter protocol ip pref 49076 u32 fh 84c::800 order 2048 key ht 84c bkt 0 flowid 1:44 
+  match 0a010248/ffffffff at 16
+filter protocol ip pref 49077 u32 
+filter protocol ip pref 49077 u32 fh 84b: ht divisor 1 
+filter protocol ip pref 49077 u32 fh 84b::800 order 2048 key ht 84b bkt 0 flowid 1:45 
+  match 0a01025a/ffffffff at 16
+filter protocol ip pref 49078 u32 
+filter protocol ip pref 49078 u32 fh 84a: ht divisor 1 
+filter protocol ip pref 49078 u32 fh 84a::800 order 2048 key ht 84a bkt 0 flowid 1:46 
+  match 0a01024b/ffffffff at 16
+filter protocol ip pref 49079 u32 
+filter protocol ip pref 49079 u32 fh 849: ht divisor 1 
+filter protocol ip pref 49079 u32 fh 849::800 order 2048 key ht 849 bkt 0 flowid 1:47 
+  match 0a01023e/ffffffff at 16
+filter protocol ip pref 49080 u32 
+filter protocol ip pref 49080 u32 fh 848: ht divisor 1 
+filter protocol ip pref 49080 u32 fh 848::800 order 2048 key ht 848 bkt 0 flowid 1:48 
+  match 0a010220/ffffffff at 16
+filter protocol ip pref 49081 u32 
+filter protocol ip pref 49081 u32 fh 847: ht divisor 1 
+filter protocol ip pref 49081 u32 fh 847::800 order 2048 key ht 847 bkt 0 flowid 1:49 
+  match 0a010262/ffffffff at 16
+filter protocol ip pref 49082 u32 
+filter protocol ip pref 49082 u32 fh 846: ht divisor 1 
+filter protocol ip pref 49082 u32 fh 846::800 order 2048 key ht 846 bkt 0 flowid 1:50 
+  match 0a01025e/ffffffff at 16
+filter protocol ip pref 49083 u32 
+filter protocol ip pref 49083 u32 fh 845: ht divisor 1 
+filter protocol ip pref 49083 u32 fh 845::800 order 2048 key ht 845 bkt 0 flowid 1:51 
+  match 0a01025d/ffffffff at 16
+filter protocol ip pref 49084 u32 
+filter protocol ip pref 49084 u32 fh 844: ht divisor 1 
+filter protocol ip pref 49084 u32 fh 844::800 order 2048 key ht 844 bkt 0 flowid 1:52 
+  match 0a01022e/ffffffff at 16
+filter protocol ip pref 49085 u32 
+filter protocol ip pref 49085 u32 fh 843: ht divisor 1 
+filter protocol ip pref 49085 u32 fh 843::800 order 2048 key ht 843 bkt 0 flowid 1:53 
+  match 0a010225/ffffffff at 16
+filter protocol ip pref 49086 u32 
+filter protocol ip pref 49086 u32 fh 842: ht divisor 1 
+filter protocol ip pref 49086 u32 fh 842::800 order 2048 key ht 842 bkt 0 flowid 1:54 
+  match 0a010219/ffffffff at 16
+filter protocol ip pref 49087 u32 
+filter protocol ip pref 49087 u32 fh 841: ht divisor 1 
+filter protocol ip pref 49087 u32 fh 841::800 order 2048 key ht 841 bkt 0 flowid 1:55 
+  match 0a01020f/ffffffff at 16
+filter protocol ip pref 49088 u32 
+filter protocol ip pref 49088 u32 fh 840: ht divisor 1 
+filter protocol ip pref 49088 u32 fh 840::800 order 2048 key ht 840 bkt 0 flowid 1:56 
+  match 0a01020b/ffffffff at 16
+filter protocol ip pref 49089 u32 
+filter protocol ip pref 49089 u32 fh 83f: ht divisor 1 
+filter protocol ip pref 49089 u32 fh 83f::800 order 2048 key ht 83f bkt 0 flowid 1:57 
+  match 0a01020a/ffffffff at 16
+filter protocol ip pref 49090 u32 
+filter protocol ip pref 49090 u32 fh 83e: ht divisor 1 
+filter protocol ip pref 49090 u32 fh 83e::800 order 2048 key ht 83e bkt 0 flowid 1:58 
+  match 0a010208/ffffffff at 16
+filter protocol ip pref 49091 u32 
+filter protocol ip pref 49091 u32 fh 83d: ht divisor 1 
+filter protocol ip pref 49091 u32 fh 83d::800 order 2048 key ht 83d bkt 0 flowid 1:59 
+  match 0a010247/ffffffff at 16
+filter protocol ip pref 49092 u32 
+filter protocol ip pref 49092 u32 fh 83c: ht divisor 1 
+filter protocol ip pref 49092 u32 fh 83c::800 order 2048 key ht 83c bkt 0 flowid 1:60 
+  match 0a010258/ffffffff at 16
+filter protocol ip pref 49093 u32 
+filter protocol ip pref 49093 u32 fh 83b: ht divisor 1 
+filter protocol ip pref 49093 u32 fh 83b::800 order 2048 key ht 83b bkt 0 flowid 1:61 
+  match 0a010255/ffffffff at 16
+filter protocol ip pref 49094 u32 
+filter protocol ip pref 49094 u32 fh 83a: ht divisor 1 
+filter protocol ip pref 49094 u32 fh 83a::800 order 2048 key ht 83a bkt 0 flowid 1:62 
+  match 0a010232/ffffffff at 16
+filter protocol ip pref 49095 u32 
+filter protocol ip pref 49095 u32 fh 839: ht divisor 1 
+filter protocol ip pref 49095 u32 fh 839::800 order 2048 key ht 839 bkt 0 flowid 1:63 
+  match 0a010231/ffffffff at 16
+filter protocol ip pref 49096 u32 
+filter protocol ip pref 49096 u32 fh 838: ht divisor 1 
+filter protocol ip pref 49096 u32 fh 838::800 order 2048 key ht 838 bkt 0 flowid 1:64 
+  match 0a010213/ffffffff at 16
+filter protocol ip pref 49097 u32 
+filter protocol ip pref 49097 u32 fh 837: ht divisor 1 
+filter protocol ip pref 49097 u32 fh 837::800 order 2048 key ht 837 bkt 0 flowid 1:65 
+  match 0a010210/ffffffff at 16
+filter protocol ip pref 49098 u32 
+filter protocol ip pref 49098 u32 fh 836: ht divisor 1 
+filter protocol ip pref 49098 u32 fh 836::800 order 2048 key ht 836 bkt 0 flowid 1:66 
+  match 0a01020c/ffffffff at 16
+filter protocol ip pref 49099 u32 
+filter protocol ip pref 49099 u32 fh 835: ht divisor 1 
+filter protocol ip pref 49099 u32 fh 835::800 order 2048 key ht 835 bkt 0 flowid 1:67 
+  match 0a010251/ffffffff at 16
+filter protocol ip pref 49100 u32 
+filter protocol ip pref 49100 u32 fh 834: ht divisor 1 
+filter protocol ip pref 49100 u32 fh 834::800 order 2048 key ht 834 bkt 0 flowid 1:68 
+  match 0a010250/ffffffff at 16
+filter protocol ip pref 49101 u32 
+filter protocol ip pref 49101 u32 fh 833: ht divisor 1 
+filter protocol ip pref 49101 u32 fh 833::800 order 2048 key ht 833 bkt 0 flowid 1:69 
+  match 0a01024c/ffffffff at 16
+filter protocol ip pref 49102 u32 
+filter protocol ip pref 49102 u32 fh 832: ht divisor 1 
+filter protocol ip pref 49102 u32 fh 832::800 order 2048 key ht 832 bkt 0 flowid 1:70 
+  match 0a010241/ffffffff at 16
+filter protocol ip pref 49103 u32 
+filter protocol ip pref 49103 u32 fh 831: ht divisor 1 
+filter protocol ip pref 49103 u32 fh 831::800 order 2048 key ht 831 bkt 0 flowid 1:71 
+  match 0a01022f/ffffffff at 16
+filter protocol ip pref 49104 u32 
+filter protocol ip pref 49104 u32 fh 830: ht divisor 1 
+filter protocol ip pref 49104 u32 fh 830::800 order 2048 key ht 830 bkt 0 flowid 1:72 
+  match 0a010221/ffffffff at 16
+filter protocol ip pref 49105 u32 
+filter protocol ip pref 49105 u32 fh 82f: ht divisor 1 
+filter protocol ip pref 49105 u32 fh 82f::800 order 2048 key ht 82f bkt 0 flowid 1:73 
+  match 0a010207/ffffffff at 16
+filter protocol ip pref 49106 u32 
+filter protocol ip pref 49106 u32 fh 82e: ht divisor 1 
+filter protocol ip pref 49106 u32 fh 82e::800 order 2048 key ht 82e bkt 0 flowid 1:74 
+  match 0a01023b/ffffffff at 16
+filter protocol ip pref 49107 u32 
+filter protocol ip pref 49107 u32 fh 82d: ht divisor 1 
+filter protocol ip pref 49107 u32 fh 82d::800 order 2048 key ht 82d bkt 0 flowid 1:75 
+  match 0a010233/ffffffff at 16
+filter protocol ip pref 49108 u32 
+filter protocol ip pref 49108 u32 fh 82c: ht divisor 1 
+filter protocol ip pref 49108 u32 fh 82c::800 order 2048 key ht 82c bkt 0 flowid 1:76 
+  match 0a010227/ffffffff at 16
+filter protocol ip pref 49109 u32 
+filter protocol ip pref 49109 u32 fh 82b: ht divisor 1 
+filter protocol ip pref 49109 u32 fh 82b::800 order 2048 key ht 82b bkt 0 flowid 1:77 
+  match 0a010222/ffffffff at 16
+filter protocol ip pref 49110 u32 
+filter protocol ip pref 49110 u32 fh 82a: ht divisor 1 
+filter protocol ip pref 49110 u32 fh 82a::800 order 2048 key ht 82a bkt 0 flowid 1:78 
+  match 0a01020d/ffffffff at 16
+filter protocol ip pref 49111 u32 
+filter protocol ip pref 49111 u32 fh 829: ht divisor 1 
+filter protocol ip pref 49111 u32 fh 829::800 order 2048 key ht 829 bkt 0 flowid 1:79 
+  match 0a010205/ffffffff at 16
+filter protocol ip pref 49112 u32 
+filter protocol ip pref 49112 u32 fh 828: ht divisor 1 
+filter protocol ip pref 49112 u32 fh 828::800 order 2048 key ht 828 bkt 0 flowid 1:80 
+  match 0a010202/ffffffff at 16
+filter protocol ip pref 49113 u32 
+filter protocol ip pref 49113 u32 fh 827: ht divisor 1 
+filter protocol ip pref 49113 u32 fh 827::800 order 2048 key ht 827 bkt 0 flowid 1:81 
+  match 0a010249/ffffffff at 16
+filter protocol ip pref 49114 u32 
+filter protocol ip pref 49114 u32 fh 826: ht divisor 1 
+filter protocol ip pref 49114 u32 fh 826::800 order 2048 key ht 826 bkt 0 flowid 1:82 
+  match 0a01025b/ffffffff at 16
+filter protocol ip pref 49115 u32 
+filter protocol ip pref 49115 u32 fh 825: ht divisor 1 
+filter protocol ip pref 49115 u32 fh 825::800 order 2048 key ht 825 bkt 0 flowid 1:83 
+  match 0a010236/ffffffff at 16
+filter protocol ip pref 49116 u32 
+filter protocol ip pref 49116 u32 fh 824: ht divisor 1 
+filter protocol ip pref 49116 u32 fh 824::800 order 2048 key ht 824 bkt 0 flowid 1:84 
+  match 0a01022a/ffffffff at 16
+filter protocol ip pref 49117 u32 
+filter protocol ip pref 49117 u32 fh 823: ht divisor 1 
+filter protocol ip pref 49117 u32 fh 823::800 order 2048 key ht 823 bkt 0 flowid 1:85 
+  match 0a010224/ffffffff at 16
+filter protocol ip pref 49118 u32 
+filter protocol ip pref 49118 u32 fh 822: ht divisor 1 
+filter protocol ip pref 49118 u32 fh 822::800 order 2048 key ht 822 bkt 0 flowid 1:86 
+  match 0a01021a/ffffffff at 16
+filter protocol ip pref 49119 u32 
+filter protocol ip pref 49119 u32 fh 821: ht divisor 1 
+filter protocol ip pref 49119 u32 fh 821::800 order 2048 key ht 821 bkt 0 flowid 1:87 
+  match 0a010211/ffffffff at 16
+filter protocol ip pref 49120 u32 
+filter protocol ip pref 49120 u32 fh 820: ht divisor 1 
+filter protocol ip pref 49120 u32 fh 820::800 order 2048 key ht 820 bkt 0 flowid 1:88 
+  match 0a010209/ffffffff at 16
+filter protocol ip pref 49121 u32 
+filter protocol ip pref 49121 u32 fh 81f: ht divisor 1 
+filter protocol ip pref 49121 u32 fh 81f::800 order 2048 key ht 81f bkt 0 flowid 1:89 
+  match 0a010203/ffffffff at 16
+filter protocol ip pref 49122 u32 
+filter protocol ip pref 49122 u32 fh 81e: ht divisor 1 
+filter protocol ip pref 49122 u32 fh 81e::800 order 2048 key ht 81e bkt 0 flowid 1:90 
+  match 0a010253/ffffffff at 16
+filter protocol ip pref 49123 u32 
+filter protocol ip pref 49123 u32 fh 81d: ht divisor 1 
+filter protocol ip pref 49123 u32 fh 81d::800 order 2048 key ht 81d bkt 0 flowid 1:91 
+  match 0a010261/ffffffff at 16
+filter protocol ip pref 49124 u32 
+filter protocol ip pref 49124 u32 fh 81c: ht divisor 1 
+filter protocol ip pref 49124 u32 fh 81c::800 order 2048 key ht 81c bkt 0 flowid 1:92 
+  match 0a010260/ffffffff at 16
+filter protocol ip pref 49125 u32 
+filter protocol ip pref 49125 u32 fh 81b: ht divisor 1 
+filter protocol ip pref 49125 u32 fh 81b::800 order 2048 key ht 81b bkt 0 flowid 1:93 
+  match 0a010246/ffffffff at 16
+filter protocol ip pref 49126 u32 
+filter protocol ip pref 49126 u32 fh 81a: ht divisor 1 
+filter protocol ip pref 49126 u32 fh 81a::800 order 2048 key ht 81a bkt 0 flowid 1:94 
+  match 0a010242/ffffffff at 16
+filter protocol ip pref 49127 u32 
+filter protocol ip pref 49127 u32 fh 819: ht divisor 1 
+filter protocol ip pref 49127 u32 fh 819::800 order 2048 key ht 819 bkt 0 flowid 1:95 
+  match 0a010214/ffffffff at 16
+filter protocol ip pref 49128 u32 
+filter protocol ip pref 49128 u32 fh 818: ht divisor 1 
+filter protocol ip pref 49128 u32 fh 818::800 order 2048 key ht 818 bkt 0 flowid 1:96 
+  match 0a01024e/ffffffff at 16
+filter protocol ip pref 49129 u32 
+filter protocol ip pref 49129 u32 fh 817: ht divisor 1 
+filter protocol ip pref 49129 u32 fh 817::800 order 2048 key ht 817 bkt 0 flowid 1:97 
+  match 0a01023a/ffffffff at 16
+filter protocol ip pref 49130 u32 
+filter protocol ip pref 49130 u32 fh 816: ht divisor 1 
+filter protocol ip pref 49130 u32 fh 816::800 order 2048 key ht 816 bkt 0 flowid 1:98 
+  match 0a01021e/ffffffff at 16
+filter protocol ip pref 49131 u32 
+filter protocol ip pref 49131 u32 fh 815: ht divisor 1 
+filter protocol ip pref 49131 u32 fh 815::800 order 2048 key ht 815 bkt 0 flowid 1:99 
+  match 0a010216/ffffffff at 16
+filter protocol ip pref 49132 u32 
+filter protocol ip pref 49132 u32 fh 814: ht divisor 1 
+filter protocol ip pref 49132 u32 fh 814::800 order 2048 key ht 814 bkt 0 flowid 1:100 
+  match 0a01025c/ffffffff at 16
+filter protocol ip pref 49133 u32 
+filter protocol ip pref 49133 u32 fh 813: ht divisor 1 
+filter protocol ip pref 49133 u32 fh 813::800 order 2048 key ht 813 bkt 0 flowid 1:101 
+  match 0a010230/ffffffff at 16
+filter protocol ip pref 49134 u32 
+filter protocol ip pref 49134 u32 fh 812: ht divisor 1 
+filter protocol ip pref 49134 u32 fh 812::800 order 2048 key ht 812 bkt 0 flowid 1:102 
+  match 0a01022b/ffffffff at 16
+filter protocol ip pref 49135 u32 
+filter protocol ip pref 49135 u32 fh 811: ht divisor 1 
+filter protocol ip pref 49135 u32 fh 811::800 order 2048 key ht 811 bkt 0 flowid 1:103 
+  match 0a01021f/ffffffff at 16
+filter protocol ip pref 49136 u32 
+filter protocol ip pref 49136 u32 fh 810: ht divisor 1 
+filter protocol ip pref 49136 u32 fh 810::800 order 2048 key ht 810 bkt 0 flowid 1:104 
+  match 0a010259/ffffffff at 16
+filter protocol ip pref 49137 u32 
+filter protocol ip pref 49137 u32 fh 80f: ht divisor 1 
+filter protocol ip pref 49137 u32 fh 80f::800 order 2048 key ht 80f bkt 0 flowid 1:105 
+  match 0a010254/ffffffff at 16
+filter protocol ip pref 49138 u32 
+filter protocol ip pref 49138 u32 fh 80e: ht divisor 1 
+filter protocol ip pref 49138 u32 fh 80e::800 order 2048 key ht 80e bkt 0 flowid 1:106 
+  match 0a010239/ffffffff at 16
+filter protocol ip pref 49139 u32 
+filter protocol ip pref 49139 u32 fh 80d: ht divisor 1 
+filter protocol ip pref 49139 u32 fh 80d::800 order 2048 key ht 80d bkt 0 flowid 1:107 
+  match 0a01022c/ffffffff at 16
+filter protocol ip pref 49140 u32 
+filter protocol ip pref 49140 u32 fh 80c: ht divisor 1 
+filter protocol ip pref 49140 u32 fh 80c::800 order 2048 key ht 80c bkt 0 flowid 1:108 
+  match 0a010229/ffffffff at 16
+filter protocol ip pref 49141 u32 
+filter protocol ip pref 49141 u32 fh 80b: ht divisor 1 
+filter protocol ip pref 49141 u32 fh 80b::800 order 2048 key ht 80b bkt 0 flowid 1:109 
+  match 0a010226/ffffffff at 16
+filter protocol ip pref 49142 u32 
+filter protocol ip pref 49142 u32 fh 80a: ht divisor 1 
+filter protocol ip pref 49142 u32 fh 80a::800 order 2048 key ht 80a bkt 0 flowid 1:110 
+  match 0a010212/ffffffff at 16
+filter protocol ip pref 49143 u32 
+filter protocol ip pref 49143 u32 fh 809: ht divisor 1 
+filter protocol ip pref 49143 u32 fh 809::800 order 2048 key ht 809 bkt 0 flowid 1:111 
+  match 0a01025f/ffffffff at 16
+filter protocol ip pref 49144 u32 
+filter protocol ip pref 49144 u32 fh 808: ht divisor 1 
+filter protocol ip pref 49144 u32 fh 808::800 order 2048 key ht 808 bkt 0 flowid 1:112 
+  match 0a01024d/ffffffff at 16
+filter protocol ip pref 49145 u32 
+filter protocol ip pref 49145 u32 fh 807: ht divisor 1 
+filter protocol ip pref 49145 u32 fh 807::800 order 2048 key ht 807 bkt 0 flowid 1:113 
+  match 0a010244/ffffffff at 16
+filter protocol ip pref 49146 u32 
+filter protocol ip pref 49146 u32 fh 806: ht divisor 1 
+filter protocol ip pref 49146 u32 fh 806::800 order 2048 key ht 806 bkt 0 flowid 1:114 
+  match 0a010240/ffffffff at 16
+filter protocol ip pref 49147 u32 
+filter protocol ip pref 49147 u32 fh 805: ht divisor 1 
+filter protocol ip pref 49147 u32 fh 805::800 order 2048 key ht 805 bkt 0 flowid 1:115 
+  match 0a01023f/ffffffff at 16
+filter protocol ip pref 49148 u32 
+filter protocol ip pref 49148 u32 fh 804: ht divisor 1 
+filter protocol ip pref 49148 u32 fh 804::800 order 2048 key ht 804 bkt 0 flowid 1:116 
+  match 0a01021b/ffffffff at 16
+filter protocol ip pref 49149 u32 
+filter protocol ip pref 49149 u32 fh 803: ht divisor 1 
+filter protocol ip pref 49149 u32 fh 803::800 order 2048 key ht 803 bkt 0 flowid 1:117 
+  match 0a010215/ffffffff at 16
+filter protocol ip pref 49150 u32 
+filter protocol ip pref 49150 u32 fh 802: ht divisor 1 
+filter protocol ip pref 49150 u32 fh 802::800 order 2048 key ht 802 bkt 0 flowid 1:118 
+  match 0a01020e/ffffffff at 16
+filter protocol ip pref 49151 u32 
+filter protocol ip pref 49151 u32 fh 801: ht divisor 1 
+filter protocol ip pref 49151 u32 fh 801::800 order 2048 key ht 801 bkt 0 flowid 1:119 
+  match 0a010263/ffffffff at 16
+filter protocol ip pref 49152 u32 
+filter protocol ip pref 49152 u32 fh 800: ht divisor 1 
+filter protocol ip pref 49152 u32 fh 800::800 order 2048 key ht 800 bkt 0 flowid 1:120 
+  match 0a01023c/ffffffff at 16
