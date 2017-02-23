@@ -132,7 +132,7 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 
 			t3 := time.Now().UnixNano() / 1000000
 			//config pod inbound bandwidth tc qdisc on veth outside
-			//set_pod_veth_inbound_bandwidth(pod_qos, pod_info_map)
+			set_pod_veth_inbound_bandwidth(pod_qos, pod_info_map)
 
 			t4 := time.Now().UnixNano() / 1000000
 			set_br_inbound_bandwidth(br_int, pod_qos, pod_info_map)
@@ -952,13 +952,10 @@ func set_pod_veth_inbound_bandwidth(pod_qos map[string]qos_para, pod_info_map ma
 }
 
 func set_pod_eth_outbound_bandwidth(pod_qos map[string]qos_para, pod_info_map map[string]pod_metadata) {
-
 	//config pod outbound bandwidth tc qdisc on eth0 in pod
 	//println("Start to set pod outbound bandwidth in pod...")
-
 	for ip, val := range pod_qos {
-		println(ip + " outbound: " + val.OutBandWidthMin + ", " + val.OutBandWidthMax)
-
+		log.Println(ip + " outbound: " + val.OutBandWidthMin + ", " + val.OutBandWidthMax)
 		//if ip = "all", skip it
 		if ip == "all" || ip == "default" {
 			//println("all ip traffic bandwidth.")
@@ -966,14 +963,11 @@ func set_pod_eth_outbound_bandwidth(pod_qos map[string]qos_para, pod_info_map ma
 		}
 		//get container pid
 		if pod_meta, ok := pod_info_map[ip]; ok {
-
 			container_pid := pod_meta.cinfo_list[0].pid
 			action := val.Action
 
 			switch action {
-
 			case "add":
-
 				//configure tc qdisc tbf on eth0 in the container(pod)
 				//Firstly, delete the tc qdisc on the eth0, tc qdisc del dev $1 root
 				cmd := "nsenter"
@@ -990,7 +984,6 @@ func set_pod_eth_outbound_bandwidth(pod_qos map[string]qos_para, pod_info_map ma
 				show_tc_qdisc_in_pod(container_pid, pod_dev)
 
 			case "delete":
-
 				println("Delete pod Qos on", ip, pod_dev)
 				cmd := "nsenter"
 				args := []string{"-t", container_pid, "-n", "tc", "qdisc", "del", "dev", pod_dev, "root"}
@@ -998,7 +991,6 @@ func set_pod_eth_outbound_bandwidth(pod_qos map[string]qos_para, pod_info_map ma
 				show_tc_qdisc_in_pod(container_pid, pod_dev)
 
 			case "change":
-
 				println("Change pod Qos on", ip, pod_dev)
 
 				cmd := "nsenter"
@@ -1016,30 +1008,27 @@ func set_pod_eth_outbound_bandwidth(pod_qos map[string]qos_para, pod_info_map ma
 			//show tc configuration
 			//println("pod "+ip+" tc qdisc show: ")
 			//show_tc_qdisc_in_pod(container_pid, pod_dev)
-
 		} else {
 			println("Can not find ip: " + ip + " in pod_info_map.")
 			continue
 		}
 	}
-
 }
 
 //get veth list on the host
 func get_veth_list() map[int]string {
-
-	//println("Start to get veth list...")
+	log.Println("Start to get veth list...")
 	result := map[int]string{}
 	intf_list, err := net.Interfaces()
 	if err != nil {
-		println(err)
-
+		log.Println(err)
 	}
 	for _, f := range intf_list {
-
-		if strings.Contains(f.Name, "veth") {
+		// for flannel, it uses 'veth'
+		veth_key := "_l"
+		if strings.Contains(f.Name, veth_key) {
 			result[f.Index] = f.Name
-			//fmt.Println(f.Index, f.Name)
+			log.Println(f.Index, f.Name)
 		}
 	}
 	return result
