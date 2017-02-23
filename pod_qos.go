@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	//"io/ioutil"
 	"github.com/coreos/etcd/client"
 	"github.com/docker/libkv"
 	"github.com/docker/libkv/store"
@@ -19,8 +18,8 @@ import (
 
 const (
 	pod_dev                        = "eth0"
-	node_dev                       = "ens3"    //"eth0"
-	br_int                         = "docker0" //"br-int"
+	node_dev                       = "ens3" //"eth0"
+	br_int                         = "vxbr" //"br-int"
 	htb_default_classid            = "8001"
 	htb_root_handle                = "1:"
 	htb_root_classid               = "1:1"
