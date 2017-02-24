@@ -589,31 +589,35 @@ func set_br_inbound_bandwidth(br_name string, pod_qos map[string]qos_para, pod_i
 
 	}
 
-	log.Println("show bridge root and default qdisc and class")
-	show_tc_qdisc(br_name)
-	show_tc_class(br_name)
+	/*
+		log.Println("show bridge root and default qdisc and class")
+		show_tc_qdisc(br_name)
+		show_tc_class(br_name)
 
-	log.Println("show VM root and default qdisc and class")
-	show_tc_qdisc(intf_name)
-	show_tc_class(intf_name)
+		log.Println("show VM root and default qdisc and class")
+		show_tc_qdisc(intf_name)
+		show_tc_class(intf_name)
+	*/
 
 	//set tc class and filter for each pod
 	set_pod_br_inbound_bandwidth_class_and_filter(br_name, pod_qos, pod_info_map)
 
 	//show tc configuration
-	log.Println("show br_int qdisc and class")
-	show_tc_qdisc(br_name)
-	show_tc_class(br_name)
-	log.Println("show br_int filter")
-	show_tc_filter(br_name, htb_root_handle)
-	show_tc_filter(br_name, htb_root_classid)
+	/*
+		log.Println("show br_int qdisc and class")
+		show_tc_qdisc(br_name)
+		show_tc_class(br_name)
+		log.Println("show br_int filter")
+		show_tc_filter(br_name, htb_root_handle)
+		show_tc_filter(br_name, htb_root_classid)
 
-	log.Println("show VM qdisc and class")
-	show_tc_qdisc(intf_name)
-	show_tc_class(intf_name)
-	log.Println("show VM filter")
-	show_tc_filter(intf_name, htb_root_handle)
-	show_tc_filter(intf_name, htb_root_classid)
+		log.Println("show VM qdisc and class")
+		show_tc_qdisc(intf_name)
+		show_tc_class(intf_name)
+		log.Println("show VM filter")
+		show_tc_filter(intf_name, htb_root_handle)
+		show_tc_filter(intf_name, htb_root_classid)
+	*/
 
 }
 
