@@ -18,9 +18,10 @@ import (
 )
 
 const (
-	pod_dev                        = "eth0"
-	node_dev                       = "ens3" //"eth0"
-	br_int                         = "vxbr" //"br-int"
+	pod_dev  = "eth0"
+	node_dev = "ens3" //"eth0"
+	br_int   = "vxbr" //"br-int"
+	//br_int                         = "vxlan_sys_4789" //"br-int"
 	htb_default_classid            = "8001"
 	htb_root_handle                = "1:"
 	htb_root_classid               = "1:1"
@@ -499,19 +500,32 @@ func set_br_inbound_bandwidth(br_name string, pod_qos map[string]qos_para, pod_i
 		exe_cmd(cmd, args)
 
 	case "delete":
+		// if we delete "ALL", it means we remove all the qdisc config on the interface
+		// therefore, we run 'tc qdisc del dev intf root'
 
-		//  delete the br-int
-		println("Delete pod", ip)
-		rate := node_inbound_bandwidth + "mbit"
+		// delete the br-int
 		cmd := "tc"
-		args := []string{"class", "del", "dev", br_name, "parent", htb_root_handle, "classid", htb_root_classid, "htb", "rate", rate, "ceil", rate}
+		args := []string{"qdisc", "del", "dev", br_name, "root"}
 		exe_cmd(cmd, args)
 
-		// delete the vm node_dev
-		rate = node_outbound_bandwidth + "mbit"
+		// delete the vm interface
 		cmd = "tc"
-		args = []string{"class", "del", "dev", intf_name, "parent", htb_root_handle, "classid", htb_root_classid, "htb", "rate", rate, "ceil", rate}
+		args = []string{"qdisc", "del", "dev", intf_name, "root"}
 		exe_cmd(cmd, args)
+		/*
+			// Original code to delete:
+			// delete the br-int
+			rate := node_inbound_bandwidth + "mbit"
+			cmd := "tc"
+			args := []string{"class", "del", "dev", br_name, "parent", htb_root_handle, "classid", htb_root_classid, "htb", "rate", rate, "ceil", rate}
+			exe_cmd(cmd, args)
+
+			// delete the vm node_dev
+			rate = node_outbound_bandwidth + "mbit"
+			cmd = "tc"
+			args = []string{"class", "del", "dev", intf_name, "parent", htb_root_handle, "classid", htb_root_classid, "htb", "rate", rate, "ceil", rate}
+			exe_cmd(cmd, args)
+		*/
 
 	case "change":
 		// change the br-int
@@ -527,7 +541,7 @@ func set_br_inbound_bandwidth(br_name string, pod_qos map[string]qos_para, pod_i
 		exe_cmd(cmd, args)
 
 	case "":
-		log.Println("Not change Qos on pod for ALL ", ip)
+		log.Println("No change for ALL ", ip)
 
 	default:
 
@@ -567,7 +581,6 @@ func set_br_inbound_bandwidth(br_name string, pod_qos map[string]qos_para, pod_i
 
 	case "delete":
 		// br-int
-		println("Delete pod", ip)
 		cmd := "tc"
 		args := []string{"class", "del", "dev", br_name, "parent", htb_root_classid, "classid", htb_default_classid, "htb", "rate", rate, "ceil", ceil}
 		exe_cmd(cmd, args)
@@ -583,7 +596,7 @@ func set_br_inbound_bandwidth(br_name string, pod_qos map[string]qos_para, pod_i
 		exe_cmd(cmd, args)
 
 	case "":
-		log.Println("Not change Qos on pod for DEFAULT", ip)
+		log.Println("No change for DEFAULT", ip)
 
 	default:
 
@@ -768,7 +781,7 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 				pod_info_map[ip] = pod_meta
 				//fmt.Print(pod_info_map[ip])
 			} else {
-				log.Println("Do nothing for delete action because Can NOT find the config for " + ip + " in pod info map.")
+				log.Println("No config for " + ip + " in pod info map and ignore the DELETE action")
 			}
 
 		case "change":
@@ -798,7 +811,7 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 			}
 
 		case "":
-			log.Println("Not change Qos on VM and br for class and filters on ", ip)
+			log.Println("No change of class and filters on br-int and vm intf on node: ", ip)
 
 		default:
 

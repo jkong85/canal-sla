@@ -89,6 +89,10 @@ func clear_ovs_bridge() {
 	*/
 	cmd := "ovs-vsctl del-br vxbr"
 	exe_cmd_full(cmd)
+	// delete the tunnel created by ovs: vxlan-sys-4789
+	cmd = "ip link delete vxlan_sys_4789"
+	exe_cmd_full(cmd)
+
 }
 
 func clear_vm_config(dev string) {
