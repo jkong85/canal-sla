@@ -1,100 +1,100 @@
 #!/bin/bash
-docker exec 0_2   iperf3 -u -c  10.1.2.102 -t 600 -b 10Mbit 
-docker exec 0_3   iperf3 -u -c  10.1.2.103 -t 600 -b 10Mbit
-docker exec 0_4   iperf3 -u -c  10.1.2.104 -t 600 -b 10Mbit
-docker exec 0_5   iperf3 -u -c  10.1.2.105 -t 600 -b 10Mbit
-docker exec 0_6   iperf3 -u -c  10.1.2.106 -t 600 -b 10Mbit
-docker exec 0_7   iperf3 -u -c  10.1.2.107 -t 600 -b 10Mbit
-docker exec 0_8   iperf3 -u -c  10.1.2.108 -t 600 -b 10Mbit
-docker exec 0_9   iperf3 -u -c  10.1.2.109 -t 600 -b 10Mbit
-docker exec 0_10  iperf3 -u -c  10.1.2.110 -t 600 -b 10Mbit
-docker exec 0_11  iperf3 -u -c  10.1.2.111 -t 600 -b 10Mbit
-docker exec 0_12  iperf3 -u -c  10.1.2.112 -t 600 -b 10Mbit
-docker exec 0_13  iperf3 -u -c  10.1.2.113 -t 600 -b 10Mbit
-docker exec 0_14  iperf3 -u -c  10.1.2.114 -t 600 -b 10Mbit
-docker exec 0_15  iperf3 -u -c  10.1.2.115 -t 600 -b 10Mbit
-docker exec 0_16  iperf3 -u -c  10.1.2.116 -t 600 -b 10Mbit
-docker exec 0_17  iperf3 -u -c  10.1.2.117 -t 600 -b 10Mbit
-docker exec 0_18  iperf3 -u -c  10.1.2.118 -t 600 -b 10Mbit
-docker exec 0_19  iperf3 -u -c  10.1.2.119 -t 600 -b 10Mbit
-docker exec 0_20  iperf3 -u -c  10.1.2.120 -t 600 -b 10Mbit
-docker exec 0_21  iperf3 -u -c  10.1.2.121 -t 600 -b 10Mbit
-docker exec 0_22  iperf3 -u -c  10.1.2.122 -t 600 -b 10Mbit
-docker exec 0_23  iperf3 -u -c  10.1.2.123 -t 600 -b 10Mbit
-docker exec 0_24  iperf3 -u -c  10.1.2.124 -t 600 -b 10Mbit
-docker exec 0_25  iperf3 -u -c  10.1.2.125 -t 600 -b 10Mbit
-docker exec 0_26  iperf3 -u -c  10.1.2.126 -t 600 -b 10Mbit
-docker exec 0_27  iperf3 -u -c  10.1.2.127 -t 600 -b 10Mbit
-docker exec 0_28  iperf3 -u -c  10.1.2.128 -t 600 -b 10Mbit
-docker exec 0_29  iperf3 -u -c  10.1.2.129 -t 600 -b 10Mbit
-docker exec 0_30  iperf3 -u -c  10.1.2.130 -t 600 -b 10Mbit
-docker exec 0_31  iperf3 -u -c  10.1.2.131 -t 600 -b 10Mbit
-docker exec 0_32  iperf3 -u -c  10.1.2.132 -t 600 -b 10Mbit
-docker exec 0_33  iperf3 -u -c  10.1.2.133 -t 600 -b 10Mbit
-docker exec 0_34  iperf3 -u -c  10.1.2.134 -t 600 -b 10Mbit
-docker exec 0_35  iperf3 -u -c  10.1.2.135 -t 600 -b 10Mbit
-docker exec 0_36  iperf3 -u -c  10.1.2.136 -t 600 -b 10Mbit
-docker exec 0_37  iperf3 -u -c  10.1.2.137 -t 600 -b 10Mbit
-docker exec 0_38  iperf3 -u -c  10.1.2.138 -t 600 -b 10Mbit
-docker exec 0_39  iperf3 -u -c  10.1.2.139 -t 600 -b 10Mbit
-docker exec 0_40  iperf3 -u -c  10.1.2.140 -t 600 -b 10Mbit
-docker exec 0_41  iperf3 -u -c  10.1.2.141 -t 600 -b 10Mbit
-docker exec 0_42  iperf3 -u -c  10.1.2.142 -t 600 -b 10Mbit
-docker exec 0_43  iperf3 -u -c  10.1.2.143 -t 600 -b 10Mbit
-docker exec 0_44  iperf3 -u -c  10.1.2.144 -t 600 -b 10Mbit
-docker exec 0_45  iperf3 -u -c  10.1.2.145 -t 600 -b 10Mbit
-docker exec 0_46  iperf3 -u -c  10.1.2.146 -t 600 -b 10Mbit
-docker exec 0_47  iperf3 -u -c  10.1.2.147 -t 600 -b 10Mbit
-docker exec 0_48  iperf3 -u -c  10.1.2.148 -t 600 -b 10Mbit
-docker exec 0_49  iperf3 -u -c  10.1.2.149 -t 600 -b 10Mbit
-docker exec 0_50  iperf3 -u -c  10.1.2.150 -t 600 -b 10Mbit
-docker exec 0_51  iperf3 -u -c  10.1.2.151 -t 600 -b 10Mbit
-docker exec 0_52  iperf3 -u -c  10.1.2.152 -t 600 -b 10Mbit
-docker exec 0_53  iperf3 -u -c  10.1.2.153 -t 600 -b 10Mbit
-docker exec 0_54  iperf3 -u -c  10.1.2.154 -t 600 -b 10Mbit
-docker exec 0_55  iperf3 -u -c  10.1.2.155 -t 600 -b 10Mbit
-docker exec 0_56  iperf3 -u -c  10.1.2.156 -t 600 -b 10Mbit
-docker exec 0_57  iperf3 -u -c  10.1.2.157 -t 600 -b 10Mbit
-docker exec 0_58  iperf3 -u -c  10.1.2.158 -t 600 -b 10Mbit
-docker exec 0_59  iperf3 -u -c  10.1.2.159 -t 600 -b 10Mbit
-docker exec 0_60  iperf3 -u -c  10.1.2.160 -t 600 -b 10Mbit
-docker exec 0_61  iperf3 -u -c  10.1.2.161 -t 600 -b 10Mbit
-docker exec 0_62  iperf3 -u -c  10.1.2.162 -t 600 -b 10Mbit
-docker exec 0_63  iperf3 -u -c  10.1.2.163 -t 600 -b 10Mbit
-docker exec 0_64  iperf3 -u -c  10.1.2.164 -t 600 -b 10Mbit
-docker exec 0_65  iperf3 -u -c  10.1.2.165 -t 600 -b 10Mbit
-docker exec 0_66  iperf3 -u -c  10.1.2.166 -t 600 -b 10Mbit
-docker exec 0_67  iperf3 -u -c  10.1.2.167 -t 600 -b 10Mbit
-docker exec 0_68  iperf3 -u -c  10.1.2.168 -t 600 -b 10Mbit
-docker exec 0_69  iperf3 -u -c  10.1.2.169 -t 600 -b 10Mbit
-docker exec 0_70  iperf3 -u -c  10.1.2.170 -t 600 -b 10Mbit
-docker exec 0_71  iperf3 -u -c  10.1.2.171 -t 600 -b 10Mbit
-docker exec 0_72  iperf3 -u -c  10.1.2.172 -t 600 -b 10Mbit
-docker exec 0_73  iperf3 -u -c  10.1.2.173 -t 600 -b 10Mbit
-docker exec 0_74  iperf3 -u -c  10.1.2.174 -t 600 -b 10Mbit
-docker exec 0_75  iperf3 -u -c  10.1.2.175 -t 600 -b 10Mbit
-docker exec 0_76  iperf3 -u -c  10.1.2.176 -t 600 -b 10Mbit
-docker exec 0_77  iperf3 -u -c  10.1.2.177 -t 600 -b 10Mbit
-docker exec 0_78  iperf3 -u -c  10.1.2.178 -t 600 -b 10Mbit
-docker exec 0_79  iperf3 -u -c  10.1.2.179 -t 600 -b 10Mbit
-docker exec 0_80  iperf3 -u -c  10.1.2.180 -t 600 -b 10Mbit
-docker exec 0_81  iperf3 -u -c  10.1.2.181 -t 600 -b 10Mbit
-docker exec 0_82  iperf3 -u -c  10.1.2.182 -t 600 -b 10Mbit
-docker exec 0_83  iperf3 -u -c  10.1.2.183 -t 600 -b 10Mbit
-docker exec 0_84  iperf3 -u -c  10.1.2.184 -t 600 -b 10Mbit
-docker exec 0_85  iperf3 -u -c  10.1.2.185 -t 600 -b 10Mbit
-docker exec 0_86  iperf3 -u -c  10.1.2.186 -t 600 -b 10Mbit
-docker exec 0_87  iperf3 -u -c  10.1.2.187 -t 600 -b 10Mbit
-docker exec 0_88  iperf3 -u -c  10.1.2.188 -t 600 -b 10Mbit
-docker exec 0_89  iperf3 -u -c  10.1.2.189 -t 600 -b 10Mbit
-docker exec 0_90  iperf3 -u -c  10.1.2.190 -t 600 -b 10Mbit
-docker exec 0_91  iperf3 -u -c  10.1.2.191 -t 600 -b 10Mbit
-docker exec 0_92  iperf3 -u -c  10.1.2.192 -t 600 -b 10Mbit
-docker exec 0_93  iperf3 -u -c  10.1.2.193 -t 600 -b 10Mbit
-docker exec 0_94  iperf3 -u -c  10.1.2.194 -t 600 -b 10Mbit
-docker exec 0_95  iperf3 -u -c  10.1.2.195 -t 600 -b 10Mbit
-docker exec 0_96  iperf3 -u -c  10.1.2.196 -t 600 -b 10Mbit
-docker exec 0_97  iperf3 -u -c  10.1.2.197 -t 600 -b 10Mbit
-docker exec 0_98  iperf3 -u -c  10.1.2.198 -t 600 -b 10Mbit
-docker exec 0_99  iperf3 -u -c  10.1.2.199 -t 600 -b 10Mbit
-docker exec 0_100 iperf3 -u -c  10.1.2.200 -t 600 -b 10Mbit 
+docker exec 0_2   iperf3 -u -c  10.1.2.102 -t 10 -b 10Mbit &
+docker exec 0_3   iperf3 -u -c  10.1.2.103 -t 10 -b 10Mbit &
+docker exec 0_4   iperf3 -u -c  10.1.2.104 -t 10 -b 10Mbit & 
+docker exec 0_5   iperf3 -u -c  10.1.2.105 -t 10 -b 10Mbit &
+docker exec 0_6   iperf3 -u -c  10.1.2.106 -t 10 -b 10Mbit &
+docker exec 0_7   iperf3 -u -c  10.1.2.107 -t 10 -b 10Mbit &
+docker exec 0_8   iperf3 -u -c  10.1.2.108 -t 10 -b 10Mbit &
+docker exec 0_9   iperf3 -u -c  10.1.2.109 -t 10 -b 10Mbit &
+docker exec 0_10  iperf3 -u -c  10.1.2.110 -t 10 -b 10Mbit &
+docker exec 0_11  iperf3 -u -c  10.1.2.111 -t 10 -b 10Mbit &
+docker exec 0_12  iperf3 -u -c  10.1.2.112 -t 10 -b 10Mbit &
+docker exec 0_13  iperf3 -u -c  10.1.2.113 -t 10 -b 10Mbit &
+docker exec 0_14  iperf3 -u -c  10.1.2.114 -t 10 -b 10Mbit &
+docker exec 0_15  iperf3 -u -c  10.1.2.115 -t 10 -b 10Mbit &
+docker exec 0_16  iperf3 -u -c  10.1.2.116 -t 10 -b 10Mbit &
+docker exec 0_17  iperf3 -u -c  10.1.2.117 -t 10 -b 10Mbit &
+docker exec 0_18  iperf3 -u -c  10.1.2.118 -t 10 -b 10Mbit &
+docker exec 0_19  iperf3 -u -c  10.1.2.119 -t 10 -b 10Mbit &
+docker exec 0_20  iperf3 -u -c  10.1.2.120 -t 10 -b 10Mbit &
+docker exec 0_21  iperf3 -u -c  10.1.2.121 -t 10 -b 10Mbit &
+docker exec 0_22  iperf3 -u -c  10.1.2.122 -t 10 -b 10Mbit &
+docker exec 0_23  iperf3 -u -c  10.1.2.123 -t 10 -b 10Mbit &
+docker exec 0_24  iperf3 -u -c  10.1.2.124 -t 10 -b 10Mbit &
+docker exec 0_25  iperf3 -u -c  10.1.2.125 -t 10 -b 10Mbit &
+docker exec 0_26  iperf3 -u -c  10.1.2.126 -t 10 -b 10Mbit &
+docker exec 0_27  iperf3 -u -c  10.1.2.127 -t 10 -b 10Mbit &
+docker exec 0_28  iperf3 -u -c  10.1.2.128 -t 10 -b 10Mbit &
+docker exec 0_29  iperf3 -u -c  10.1.2.129 -t 10 -b 10Mbit &
+docker exec 0_30  iperf3 -u -c  10.1.2.130 -t 10 -b 10Mbit &
+docker exec 0_31  iperf3 -u -c  10.1.2.131 -t 10 -b 10Mbit &
+docker exec 0_32  iperf3 -u -c  10.1.2.132 -t 10 -b 10Mbit &
+docker exec 0_33  iperf3 -u -c  10.1.2.133 -t 10 -b 10Mbit &
+docker exec 0_34  iperf3 -u -c  10.1.2.134 -t 10 -b 10Mbit &
+docker exec 0_35  iperf3 -u -c  10.1.2.135 -t 10 -b 10Mbit &
+docker exec 0_36  iperf3 -u -c  10.1.2.136 -t 10 -b 10Mbit &
+docker exec 0_37  iperf3 -u -c  10.1.2.137 -t 10 -b 10Mbit &
+docker exec 0_38  iperf3 -u -c  10.1.2.138 -t 10 -b 10Mbit &
+docker exec 0_39  iperf3 -u -c  10.1.2.139 -t 10 -b 10Mbit &
+docker exec 0_40  iperf3 -u -c  10.1.2.140 -t 10 -b 10Mbit &
+docker exec 0_41  iperf3 -u -c  10.1.2.141 -t 10 -b 10Mbit &
+docker exec 0_42  iperf3 -u -c  10.1.2.142 -t 10 -b 10Mbit &
+docker exec 0_43  iperf3 -u -c  10.1.2.143 -t 10 -b 10Mbit &
+docker exec 0_44  iperf3 -u -c  10.1.2.144 -t 10 -b 10Mbit &
+docker exec 0_45  iperf3 -u -c  10.1.2.145 -t 10 -b 10Mbit &
+docker exec 0_46  iperf3 -u -c  10.1.2.146 -t 10 -b 10Mbit &
+docker exec 0_47  iperf3 -u -c  10.1.2.147 -t 10 -b 10Mbit &
+docker exec 0_48  iperf3 -u -c  10.1.2.148 -t 10 -b 10Mbit &
+docker exec 0_49  iperf3 -u -c  10.1.2.149 -t 10 -b 10Mbit &
+docker exec 0_50  iperf3 -u -c  10.1.2.150 -t 10 -b 10Mbit &
+docker exec 0_51  iperf3 -u -c  10.1.2.151 -t 10 -b 10Mbit &
+docker exec 0_52  iperf3 -u -c  10.1.2.152 -t 10 -b 10Mbit &
+docker exec 0_53  iperf3 -u -c  10.1.2.153 -t 10 -b 10Mbit &
+docker exec 0_54  iperf3 -u -c  10.1.2.154 -t 10 -b 10Mbit &
+docker exec 0_55  iperf3 -u -c  10.1.2.155 -t 10 -b 10Mbit &
+docker exec 0_56  iperf3 -u -c  10.1.2.156 -t 10 -b 10Mbit &
+docker exec 0_57  iperf3 -u -c  10.1.2.157 -t 10 -b 10Mbit &
+docker exec 0_58  iperf3 -u -c  10.1.2.158 -t 10 -b 10Mbit &
+docker exec 0_59  iperf3 -u -c  10.1.2.159 -t 10 -b 10Mbit &
+docker exec 0_60  iperf3 -u -c  10.1.2.160 -t 10 -b 10Mbit &
+docker exec 0_61  iperf3 -u -c  10.1.2.161 -t 10 -b 10Mbit &
+docker exec 0_62  iperf3 -u -c  10.1.2.162 -t 10 -b 10Mbit &
+docker exec 0_63  iperf3 -u -c  10.1.2.163 -t 10 -b 10Mbit &
+docker exec 0_64  iperf3 -u -c  10.1.2.164 -t 10 -b 10Mbit &
+docker exec 0_65  iperf3 -u -c  10.1.2.165 -t 10 -b 10Mbit &
+docker exec 0_66  iperf3 -u -c  10.1.2.166 -t 10 -b 10Mbit &
+docker exec 0_67  iperf3 -u -c  10.1.2.167 -t 10 -b 10Mbit &
+docker exec 0_68  iperf3 -u -c  10.1.2.168 -t 10 -b 10Mbit &
+docker exec 0_69  iperf3 -u -c  10.1.2.169 -t 10 -b 10Mbit &
+docker exec 0_70  iperf3 -u -c  10.1.2.170 -t 10 -b 10Mbit &
+docker exec 0_71  iperf3 -u -c  10.1.2.171 -t 10 -b 10Mbit &
+docker exec 0_72  iperf3 -u -c  10.1.2.172 -t 10 -b 10Mbit &
+docker exec 0_73  iperf3 -u -c  10.1.2.173 -t 10 -b 10Mbit &
+docker exec 0_74  iperf3 -u -c  10.1.2.174 -t 10 -b 10Mbit &
+docker exec 0_75  iperf3 -u -c  10.1.2.175 -t 10 -b 10Mbit &
+docker exec 0_76  iperf3 -u -c  10.1.2.176 -t 10 -b 10Mbit &
+docker exec 0_77  iperf3 -u -c  10.1.2.177 -t 10 -b 10Mbit &
+docker exec 0_78  iperf3 -u -c  10.1.2.178 -t 10 -b 10Mbit &
+docker exec 0_79  iperf3 -u -c  10.1.2.179 -t 10 -b 10Mbit &
+docker exec 0_80  iperf3 -u -c  10.1.2.180 -t 10 -b 10Mbit &
+docker exec 0_81  iperf3 -u -c  10.1.2.181 -t 10 -b 10Mbit &
+docker exec 0_82  iperf3 -u -c  10.1.2.182 -t 10 -b 10Mbit &
+docker exec 0_83  iperf3 -u -c  10.1.2.183 -t 10 -b 10Mbit &
+docker exec 0_84  iperf3 -u -c  10.1.2.184 -t 10 -b 10Mbit &
+docker exec 0_85  iperf3 -u -c  10.1.2.185 -t 10 -b 10Mbit &
+docker exec 0_86  iperf3 -u -c  10.1.2.186 -t 10 -b 10Mbit &
+docker exec 0_87  iperf3 -u -c  10.1.2.187 -t 10 -b 10Mbit &
+docker exec 0_88  iperf3 -u -c  10.1.2.188 -t 10 -b 10Mbit &
+docker exec 0_89  iperf3 -u -c  10.1.2.189 -t 10 -b 10Mbit &
+docker exec 0_90  iperf3 -u -c  10.1.2.190 -t 10 -b 10Mbit &
+docker exec 0_91  iperf3 -u -c  10.1.2.191 -t 10 -b 10Mbit &
+docker exec 0_92  iperf3 -u -c  10.1.2.192 -t 10 -b 10Mbit &
+docker exec 0_93  iperf3 -u -c  10.1.2.193 -t 10 -b 10Mbit &
+docker exec 0_94  iperf3 -u -c  10.1.2.194 -t 10 -b 10Mbit &
+docker exec 0_95  iperf3 -u -c  10.1.2.195 -t 10 -b 10Mbit &
+docker exec 0_96  iperf3 -u -c  10.1.2.196 -t 10 -b 10Mbit &
+docker exec 0_97  iperf3 -u -c  10.1.2.197 -t 10 -b 10Mbit &
+docker exec 0_98  iperf3 -u -c  10.1.2.198 -t 10 -b 10Mbit &
+docker exec 0_99  iperf3 -u -c  10.1.2.199 -t 10 -b 10Mbit &
+docker exec 0_100 iperf3 -u -c  10.1.2.200 -t 10 -b 10Mbit & 
