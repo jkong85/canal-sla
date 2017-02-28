@@ -247,6 +247,16 @@ func load_pod_qos_local(data qosInput) map[string]qos_para {
 	log.Println("Load pod qos local")
 	pod_qos := map[string]qos_para{}
 
+	// check whether "All" action is delete, if yes, it means that we need to delete all rules from the Pod, veth, br-int and VM interface. we set all rules's action to 'delete' to realize it
+	delete_all_flag := false
+
+	for i := 0; i < len(data); i++ {
+		if hostIP.Equal(net.ParseIP(data[i]["NodeIP"])) && data[i]["PodIP"] == "all" && data[i]["Action"] == "delete" {
+			log.Println("delete All")
+			delete_all_flag = true
+			break
+		}
+	}
 	for i := 0; i < len(data); i++ {
 		node_id := data[i]["NodeIP"]
 		pod_id := data[i]["PodID"]
@@ -263,6 +273,11 @@ func load_pod_qos_local(data qosInput) map[string]qos_para {
 
 		// If the rule is for current host, then add it to the pod_qos
 		if hostIP.Equal(net.ParseIP(node_id)) {
+			if delete_all_flag {
+				// set all rules action to "delete"
+				log.Println("set all rules' action to delete")
+				action = "delete"
+			}
 			pod_qos[pod_ip] = qos_para{node_id, pod_id, vlan_id, vxlan_id,
 				pod_ip, action, inbandwidth_min, inbandwidth_max,
 				outbandwidth_min, outbandwidth_max, pod_prio, classid}
