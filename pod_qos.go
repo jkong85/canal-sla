@@ -66,6 +66,8 @@ type qosInput []map[string]string
 
 var classid_pool []int
 
+var hostIP net.IP
+
 func main() {
 
 	etcd_server := "127.0.0.1:4001"
@@ -80,6 +82,10 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 	cid_pid_map := map[string]string{}
 
 	classid_pool = init_classid_pool(classid_max)
+
+	//get the IP address of this host
+	hostIP = get_intf_ipaddress(node_dev)
+	log.Println("The host IP is : " + string(hostIP))
 
 	// We can register as many backends that are supported by libkv
 	etcd.Register()
@@ -255,10 +261,12 @@ func load_pod_qos_local(data qosInput) map[string]qos_para {
 		pod_prio := data[i]["PodPriority"]
 		classid := 0
 
-		//fmt.Println("pod ip: "+pod_ip)
-		pod_qos[pod_ip] = qos_para{node_id, pod_id, vlan_id, vxlan_id,
-			pod_ip, action, inbandwidth_min, inbandwidth_max,
-			outbandwidth_min, outbandwidth_max, pod_prio, classid}
+		// If the rule is for current host, then add it to the pod_qos
+		if hostIP.Equal(net.ParseIP(node_id)) {
+			pod_qos[pod_ip] = qos_para{node_id, pod_id, vlan_id, vxlan_id,
+				pod_ip, action, inbandwidth_min, inbandwidth_max,
+				outbandwidth_min, outbandwidth_max, pod_prio, classid}
+		}
 	}
 
 	log.Println("pod_qos after load is: ", pod_qos)
@@ -1058,7 +1066,7 @@ func get_intf_ipaddress(intf_name string) net.IP {
 	ifaces, err := net.Interfaces()
 
 	if err != nil {
-		fmt.Printf("Error when decode interface %s\n", err)
+		log.Printf("Error when decode interface %s\n", err)
 	}
 	// handle err
 	for _, i := range ifaces {
@@ -1070,18 +1078,18 @@ func get_intf_ipaddress(intf_name string) net.IP {
 				switch v := addr.(type) {
 				case *net.IPNet:
 					ip = v.IP
-					fmt.Println("IP net is: ", ip)
+					log.Println("IP net is: ", ip)
 					return ip
 				case *net.IPAddr:
-					//result = v.IP
+					result = v.IP
 					ip = v.IP
-					fmt.Println("IP address is: ", ip)
+					log.Println("IP address is: ", ip)
 				}
 				// process IP address
 			}
 
 			if err != nil {
-				fmt.Printf("Error when decode interface %s\n", err)
+				log.Printf("Error when decode interface %s\n", err)
 			}
 		}
 	}
