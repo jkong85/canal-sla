@@ -128,6 +128,26 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 			start := time.Now().UnixNano() / 1000000
 			pod_qos := parse_qos_info(etcd_server, key)
 
+			// Crash restore: when code crash and restarts, we restore the configuration by:
+			// "Add", "change", " " are seen as the "Add", while "delete" is still to be deleted
+			if count == 1 {
+				// firstly, delete all the configuration
+				pod_qos_delete_all := changeAction(pod_qos, 0)
+				log.Println("Change Action to Delete All", pod_qos_delete_all)
+				pod_info_map, cid_pid_map := get_pod_info_map(pod_qos_delete_all, pod_info_map, cid_pid_map)
+				set_pod_eth_outbound_bandwidth(pod_qos_delete_all, pod_info_map)
+				set_pod_veth_inbound_bandwidth(pod_qos_delete_all, pod_info_map)
+				set_br_inbound_bandwidth(br_int, pod_qos_delete_all, pod_info_map)
+				log.Println("after restore the config, the pod_info_map is", pod_info_map)
+				pod_info_map, cid_pid_map = delete_pod_info_map(pod_qos_delete_all, pod_info_map, cid_pid_map)
+				log.Println("Finally, the pod_info_map after delete all is", pod_info_map)
+
+				// reinit the class id pool
+				classid_pool = init_classid_pool(classid_max)
+				pod_qos = changeAction(pod_qos, 1)
+				log.Println("Change add, change null Action to add", pod_qos)
+			}
+
 			t1 := time.Now().UnixNano() / 1000000
 
 			pod_info_map, cid_pid_map := get_pod_info_map(pod_qos, pod_info_map, cid_pid_map)
@@ -169,11 +189,11 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 }
 
 func init_classid_pool(classid_max int) []int {
-
+	var pool_tmp []int
 	for i := 2; i <= classid_max; i++ {
-		classid_pool = append(classid_pool, i)
+		pool_tmp = append(pool_tmp, i)
 	}
-
+	classid_pool = pool_tmp
 	return classid_pool
 }
 
@@ -286,6 +306,48 @@ func load_pod_qos_local(data qosInput) map[string]qos_para {
 
 	log.Println("pod_qos after load is: ", pod_qos)
 	return pod_qos
+}
+
+// Input: pod_qos, actionType: 0 -> change all to delete, 1 -> change " ", "change" to "add"
+func changeAction(pod_qos_original map[string]qos_para, actionType int) map[string]qos_para {
+
+	pod_qos_change := map[string]qos_para{}
+
+	for _, val := range pod_qos_original {
+		node_id := val.NodeIP
+		pod_id := val.PodID
+		vlan_id := val.VlanID
+		vxlan_id := val.VxlanID
+		pod_ip := val.PodIP
+		action := val.Action
+		inbandwidth_min := val.InBandWidthMin
+		inbandwidth_max := val.InBandWidthMax
+		outbandwidth_min := val.OutBandWidthMin
+		outbandwidth_max := val.OutBandWidthMax
+		pod_prio := val.PodPriority
+		classid := val.ClassID
+
+		if actionType == 0 {
+			action = "delete"
+		} else if actionType == 1 {
+			switch action {
+			case "", " ", "change":
+				action = "add"
+			case "add":
+			default:
+
+			}
+		} else {
+			log.Println("Specify the correct action!")
+		}
+
+		pod_qos_change[pod_ip] = qos_para{node_id, pod_id, vlan_id, vxlan_id,
+			pod_ip, action, inbandwidth_min, inbandwidth_max,
+			outbandwidth_min, outbandwidth_max, pod_prio, classid}
+
+	}
+	//log.Println("After change, the pod_qos is: ", pod_qos_change)
+	return pod_qos_change
 }
 
 func get_pod_info_map(pod_qos map[string]qos_para,
