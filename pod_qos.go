@@ -767,7 +767,6 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 
 				cmd := "tc"
 				args := []string{"filter", "del", "dev", br_name, "parent", htb_root_classid, "prio", pref, "u32"}
-
 				exe_cmd(cmd, args)
 
 				//println("Delete pod class on",cur_classid, br_name, ip, pref)
@@ -808,17 +807,36 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 			}
 
 		case "change":
+			// There is 'change' cmd for linux TC and it takes affect when chaning the rate. However, it cannot take affect when we change one class's priority, unless we restart the traffic.
+			// Here I take a temporary solution by firstly deleting the filter and class, then add again. Different with the 'delete' and 'add' cmd above, there is no need to update the classID from the class pool.
 			log.Println("Before change, the pod_info_map is : ", pod_info_map)
 			if _, ok := pod_info_map[ip]; ok {
 				classid := pod_info_map[ip].classid
 				cur_classid := htb_root_handle + strconv.Itoa(classid)
+				pref := pod_info_map[ip].pref
 				log.Println("change class on" + br_name + " and current classID is: " + cur_classid)
 				/*
 					config br-int
 				*/
 				cmd := "tc"
-				args := []string{"class", "change", "dev", br_name, "parent", htb_root_classid, "classid",
+				// first to delete the filter
+				args := []string{"filter", "del", "dev", br_name, "parent", htb_root_classid, "prio", pref, "u32"}
+				exe_cmd(cmd, args)
+
+				// then delete the class
+				args = []string{"class", "del", "dev", br_name, "parent", htb_root_classid, "classid",
 					cur_classid, "htb", "rate", rate, "ceil", ceil, "prio", prio}
+				exe_cmd(cmd, args)
+
+				// then add the new class (change)
+
+				args = []string{"class", "add", "dev", br_name, "parent", htb_root_classid, "classid",
+					cur_classid, "htb", "rate", rate, "ceil", ceil, "prio", prio}
+				exe_cmd(cmd, args)
+				// finally add the filters
+
+				args = []string{"filter", "add", "dev", br_name, "parent", htb_root_classid, "protocol", "ip",
+					"prio", pref, "u32", "match", "ip", "dst", ip + "/32", "flowid", cur_classid}
 				exe_cmd(cmd, args)
 
 				/*
@@ -826,9 +844,23 @@ func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[s
 				*/
 				// take care of parent, use 'htb_root_handle' while not 'htb_root_classid'
 				cmd = "tc"
-				args = []string{"class", "change", "dev", intf_name, "parent", htb_root_handle, "classid",
+				// first del the filuer and class
+				args = []string{"filter", "del", "dev", intf_name, "parent", htb_root_handle, "prio", pref}
+				exe_cmd(cmd, args)
+
+				args = []string{"class", "del", "dev", intf_name, "parent", htb_root_classid, "classid",
+					cur_classid}
+				exe_cmd(cmd, args)
+
+				// then add the new class and filter
+				args = []string{"class", "add", "dev", intf_name, "parent", htb_root_classid, "classid",
 					cur_classid, "htb", "rate", rate, "ceil", ceil, "prio", prio}
 				exe_cmd(cmd, args)
+				// get the byte code
+				bytecode := generate_bytecode(ip)
+				filterCmd := "tc filter add dev " + string(intf_name) + " parent " + htb_root_handle + " prio " + pref + " bpf bytecode " + bytecode + " flowid " + cur_classid
+				exe_cmd_full(filterCmd)
+
 			} else {
 				log.Println("Don't have this item, No change!")
 			}
