@@ -2,6 +2,11 @@
 
 This is the branch for the SLA part of the Canal
 
+Fixed: 
+* Change priority
+* Delete the pod's configuration when delete ALL
+
+
 Potential problme:
 
 * Config tc filter for VM, parent should be set to 1:0 or 1:1 ??
