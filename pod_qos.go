@@ -998,10 +998,14 @@ func set_pod_veth_inbound_bandwidth(pod_qos map[string]qos_para, pod_info_map ma
 				args := []string{"-t", container_pid, "-n", "ip", "link", "show", "eth0"}
 				output := exe_cmd(cmd, args)
 
-				dev_id := strings.Split(output, ":")[0]
-				tmp, _ := strconv.Atoi(dev_id)
-				veth_id := tmp + 1
-				//println("dev_id:",tmp, ", veth id:",strconv.Itoa(veth_id))
+				// ip link show eth0
+				// 334: eth0@if333: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc tbf
+				// we need to get 333 here
+				veth_id_string := strings.Split(strings.Split(output, ":")[1], "f")[1]
+				veth_id, err_vid := strconv.Atoi(veth_id_string)
+				if err_vid != nil {
+					log.Println("Error, there is no veth id found for current containter's eth0")
+				}
 
 				veth_name := veth_list[veth_id]
 				//println(strconv.Itoa(veth_id), veth_name)
@@ -1020,7 +1024,7 @@ func set_pod_veth_inbound_bandwidth(pod_qos map[string]qos_para, pod_info_map ma
 				exe_cmd(cmd, args)
 
 				//show tc configuration
-				println("add qos on ", ip, veth_name)
+				log.Println("add veth's qos on ", ip, veth_name)
 				//show_tc_qdisc(veth_name)
 
 			case "delete":
@@ -1030,10 +1034,14 @@ func set_pod_veth_inbound_bandwidth(pod_qos map[string]qos_para, pod_info_map ma
 				args := []string{"-t", container_pid, "-n", "ip", "link", "show", "eth0"}
 				output := exe_cmd(cmd, args)
 
-				dev_id := strings.Split(output, ":")[0]
-				tmp, _ := strconv.Atoi(dev_id)
-				veth_id := tmp + 1
-				//println("dev_id:",tmp, ", veth id:",strconv.Itoa(veth_id))
+				// ip link show eth0
+				// 334: eth0@if333: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc tbf
+				// we need to get 333 here
+				veth_id_string := strings.Split(strings.Split(output, ":")[1], "f")[1]
+				veth_id, err_vid := strconv.Atoi(veth_id_string)
+				if err_vid != nil {
+					log.Println("Error, there is no veth id found for current containter's eth0")
+				}
 
 				veth_name := veth_list[veth_id]
 				//println(strconv.Itoa(veth_id), veth_name)
@@ -1045,7 +1053,7 @@ func set_pod_veth_inbound_bandwidth(pod_qos map[string]qos_para, pod_info_map ma
 				exe_cmd(cmd, args)
 
 				//show tc configuration
-				println("delete qos on ", ip, veth_name)
+				println("delete veth's qos on ", ip, veth_name)
 				//show_tc_qdisc(veth_name)
 
 			case "change":
@@ -1055,31 +1063,35 @@ func set_pod_veth_inbound_bandwidth(pod_qos map[string]qos_para, pod_info_map ma
 				args := []string{"-t", container_pid, "-n", "ip", "link", "show", "eth0"}
 				output := exe_cmd(cmd, args)
 
-				dev_id := strings.Split(output, ":")[0]
-				tmp, _ := strconv.Atoi(dev_id)
-				veth_id := tmp + 1
-				//println("dev_id:",tmp, ", veth id:",strconv.Itoa(veth_id))
+				// ip link show eth0
+				// 334: eth0@if333: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc tbf
+				// we need to get 333 here
+				veth_id_string := strings.Split(strings.Split(output, ":")[1], "f")[1]
+				veth_id, err_vid := strconv.Atoi(veth_id_string)
+				if err_vid != nil {
+					log.Println("Error, there is no veth id found for current containter's eth0")
+				}
 
 				veth_name := veth_list[veth_id]
-				println("Change pod Qos on", ip, veth_name)
+				log.Println("Change veth's Qos on ", ip, veth_name)
 				cmd = "tc"
 				args = []string{"qdisc", "change", "dev", veth_name, "root", "tbf", "rate",
 					val.InBandWidthMax + "mbit", "latency", "50ms", "burst", "100k"}
 				exe_cmd(cmd, args)
 
 				//show tc configuration
-				println("change qos on ", ip, veth_name)
+				log.Println("change qos on ", ip, veth_name)
 				//show_tc_qdisc(veth_name)
 
 			case "":
-				println("Not change Qos on pod", ip)
+				log.Println("Action is Null, no change on veth's Qos ", ip)
 
 			default:
 
 			}
 
 		} else {
-			println("Can not find ip: " + ip + " in pod_info_map.")
+			log.Println("Can not find ip: " + ip + " in pod_info_map.")
 			continue
 		}
 	}
@@ -1114,18 +1126,18 @@ func set_pod_eth_outbound_bandwidth(pod_qos map[string]qos_para, pod_info_map ma
 				args = []string{"-t", container_pid, "-n", "tc", "qdisc", "add", "dev", "eth0", "root", "tbf", "rate",
 					val.OutBandWidthMax + "mbit", "latency", "50ms", "burst", "100k"}
 				exe_cmd(cmd, args)
-				println("Add qos on pod", ip, pod_dev)
+				log.Println("Add qos on pod", ip, pod_dev)
 				show_tc_qdisc_in_pod(container_pid, pod_dev)
 
 			case "delete":
-				println("Delete pod Qos on", ip, pod_dev)
+				log.Println("Delete pod Qos on", ip, pod_dev)
 				cmd := "nsenter"
 				args := []string{"-t", container_pid, "-n", "tc", "qdisc", "del", "dev", pod_dev, "root"}
 				exe_cmd(cmd, args)
 				show_tc_qdisc_in_pod(container_pid, pod_dev)
 
 			case "change":
-				println("Change pod Qos on", ip, pod_dev)
+				log.Println("Change pod Qos on", ip, pod_dev)
 
 				cmd := "nsenter"
 				args := []string{"-t", container_pid, "-n", "tc", "qdisc", "change", "dev", "eth0", "root", "tbf", "rate",
@@ -1143,7 +1155,7 @@ func set_pod_eth_outbound_bandwidth(pod_qos map[string]qos_para, pod_info_map ma
 			//println("pod "+ip+" tc qdisc show: ")
 			//show_tc_qdisc_in_pod(container_pid, pod_dev)
 		} else {
-			println("Can not find ip: " + ip + " in pod_info_map.")
+			log.Println("Can not find ip: " + ip + " in pod_info_map.")
 			continue
 		}
 	}

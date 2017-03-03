@@ -56,6 +56,9 @@ func main() {
 	// try to create many dockers
 	create_containers_macvlannet_passthru()
 	//create_containers_macvlannet_bridge()
+
+	// Don't forget to change MTU to 1450, or the heavy traffic will be blocked
+	set_container_eth_mtu()
 }
 
 func create_ovs_bridge() {
@@ -136,6 +139,32 @@ func create_containers_macvlannet_passthru() {
 		exe_cmd_full(dockercmd)
 
 		number = number + 1
+	}
+}
+
+func set_container_eth_mtu() {
+
+	// set mtu for large file trans.
+	// get the still up containder id list
+	cmd := "docker"
+	args := []string{"ps", "-q"}
+	ids := exe_cmd(cmd, args)
+	fmt.Println("ids is ", ids)
+	// for each containers, do the following
+	for _, cid := range strings.Split(ids, "\n") {
+		if cid == "" {
+			continue
+		}
+
+		// get the pid
+		fmt.Println("cid is: ", cid)
+		cmd = "docker"
+		args = []string{"inspect", "-f", "{{.State.Pid}}", cid}
+		pid := strings.Trim(exe_cmd(cmd, args), "\n")
+
+		eth_cmd := "nsenter -t " + pid + " -n ifconfig eth0 mtu 1450"
+		exe_cmd_full(eth_cmd)
+
 	}
 }
 
