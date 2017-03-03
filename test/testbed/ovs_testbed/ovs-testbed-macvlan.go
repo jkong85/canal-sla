@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -33,7 +34,6 @@ func main() {
 
 	flag.Parse()
 	ip_prefix = strconv.Itoa(start_ip)
-	start_ip = start_ip*ip_interval + 1
 
 	fmt.Println(" ==> clear the ovs bridge if existed")
 	clear_ovs_bridge()
@@ -54,7 +54,8 @@ func main() {
 	create_ovs_bridge()
 
 	// try to create many dockers
-	create_containers_macvlannet()
+	create_containers_macvlannet_passthru()
+	//create_containers_macvlannet_bridge()
 }
 
 func create_ovs_bridge() {
@@ -106,10 +107,9 @@ func clear_vm_config(dev string) {
 	exe_cmd_full(cmd)
 }
 
-func create_containers_macvlannet() {
-	number := number_container
-	for number > 0 {
-		//ip := ip_net + strconv.Itoa(number) + "/24"
+func create_containers_macvlannet_passthru() {
+	number := 2
+	for number < number_container+1 {
 		// change the container name to IPaddress related : 0_2
 		newName := ip_prefix + "_" + strconv.Itoa(number)
 
@@ -123,6 +123,43 @@ func create_containers_macvlannet() {
 		macvlannetName := "macvlannet_" + newName
 		dockercmd := "docker network create -d macvlan " + subnet + " -o macvlan_mode=passthru -o parent=" + portName + " " + macvlannetName
 		exe_cmd_full(dockercmd)
+
+		// finally, don't forget to set the macvlan link up
+		hostcmd := "ip link set " + portName + " up"
+		exe_cmd_full(hostcmd)
+
+		// create docker : docker run --net=macvlannet_0_2 --ip=172.16.86.10 -itd jkong85/sharpserver bash
+		ip_index := start_ip*ip_interval + number
+		log.Println("ip_index is: ", ip_index)
+		ip := " --ip=" + ip_net + strconv.Itoa(ip_index)
+		dockercmd = "docker run " + "--name " + newName + ip + " --net=" + macvlannetName + " -dit " + image + " bash"
+		exe_cmd_full(dockercmd)
+
+		number = number + 1
+	}
+}
+
+func create_containers_macvlannet_bridge() {
+	number := number_container
+	// create macvlan interface
+	portName := "int_bridge"
+	ovscmd := "ovs-vsctl add-port vxbr " + portName + " -- set interface " + portName + " type=internal"
+	exe_cmd_full(ovscmd)
+	// create docker macvlan network : docker network create -d macvlan --subnet=10.0.0.0/24 --gateway=10.0.0.1 -o parent=eth0 --ipv6 macvlan0
+	subnet := " --subnet=" + ip_net + "0/24 "
+	//gateway := " --gateway=" + ip_net + "1 "
+	macvlannetName := "macvlannet_bridge"
+	dockercmd := "docker network create -d macvlan " + subnet + " -o macvlan_mode=bridge -o parent=" + portName + " " + macvlannetName
+	exe_cmd_full(dockercmd)
+	// finally, don't forget to set the macvlan link up
+	hostcmd := "ip link set " + portName + " up"
+	exe_cmd_full(hostcmd)
+
+	for number > 0 {
+		//ip := ip_net + strconv.Itoa(number) + "/24"
+		// change the container name to IPaddress related : 0_2
+		newName := ip_prefix + "_" + strconv.Itoa(number)
+
 		// create docker : docker run --net=macvlannet_0_2 --ip=172.16.86.10 -itd jkong85/sharpserver bash
 		dockercmd = "docker run " + "--name " + newName + " --net=" + macvlannetName + " -dit " + image + " bash"
 		exe_cmd_full(dockercmd)
@@ -130,21 +167,12 @@ func create_containers_macvlannet() {
 		number = number - 1
 	}
 }
+
 func clear_macvlannet() {
-	// clean the macvlannet, after stop the container
+	//we cannot clean the macvlannet before stopping the container
 	//docker network list | grep 'macvlannet_' | awk '{print $2}' | xargs --no-run-if-empty docker network rm
 	clean_exited_cmd := " docker network list | grep 'macvlannet_' | awk '{print $2}' | xargs --no-run-if-empty docker network rm"
 	exe_cmd_full(clean_exited_cmd)
-
-	/*
-		number := number_container
-		for number > 0 {
-			newName := ip_prefix + "_" + strconv.Itoa(number)
-			clean_exited_cmd := "docker network rm macvlannet_" + newName
-			exe_cmd_full(clean_exited_cmd)
-			number = number - 1
-		}
-	*/
 }
 
 func clear_containers() {
