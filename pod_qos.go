@@ -992,7 +992,6 @@ func set_pod_veth_inbound_bandwidth(pod_qos map[string]qos_para, pod_info_map ma
 			switch action {
 
 			case "add":
-
 				//get veth id
 				cmd := "nsenter"
 				args := []string{"-t", container_pid, "-n", "ip", "link", "show", "eth0"}
@@ -1023,8 +1022,22 @@ func set_pod_veth_inbound_bandwidth(pod_qos map[string]qos_para, pod_info_map ma
 					val.InBandWidthMax + "mbit", "latency", "50ms", "burst", "100k"}
 				exe_cmd(cmd, args)
 
+				// set the ingress
+				/*
+					tc qdisc add dev eth0 handle ffff: ingress
+					tc filter add dev eth0 parent ffff: protocol ip prio 50 \
+					   u32 match ip src 0.0.0.0/0 police rate 256kbit \
+					      burst 10k drop flowid :1
+				*/
+				/*
+					cmd = "tc qdisc add dev " + veth_name + " handle ffff: ingress"
+					exe_cmd_full(cmd)
+					cmd = " tc filter add dev " + veth_name + " parent ffff: protocol ip prio 50 u32 match ip dst " + ip + "/32" + " police rate " + val.InBandWidthMax + "mbit burst 100k drop flowid :1"
+					exe_cmd_full(cmd)
+				*/
+
 				//show tc configuration
-				log.Println("add veth's qos on ", ip, veth_name)
+				log.Println("add veth's egress and ingress on ", ip, veth_name)
 				//show_tc_qdisc(veth_name)
 
 			case "delete":
@@ -1051,6 +1064,12 @@ func set_pod_veth_inbound_bandwidth(pod_qos map[string]qos_para, pod_info_map ma
 				cmd = "tc"
 				args = []string{"qdisc", "del", "dev", veth_name, "root"}
 				exe_cmd(cmd, args)
+
+				// delete the ingress
+				/*
+					cmd = "tc qdisc del dev " + veth_name + " handle ffff: ingress"
+					exe_cmd_full(cmd)
+				*/
 
 				//show tc configuration
 				println("delete veth's qos on ", ip, veth_name)
