@@ -1,0 +1,28 @@
+Qos for the container network
+
+* Description
+We develop the isolation solution for the container network by guaranting and limiting the rate and providing isolated traffic in both of the inbound and outbound direction. 
+(Notes: inbound/outbound is based on the Pod, e.g., the traffic from the Pod to the outside is the outbound, otherwise, the traffic from the outside to the pod is called the inbound traffic)
+
+* Topology
+We consider a general topology of the container network based on the linux bridge:
+ ---------------------------
+|                      VM   |
+|    Pod0       Pod1        |
+|        \     /            |
+|         \   /             |
+|         Bridge            |
+|           |               |
+|           |               |
+|        VM eth0            |
+ ---------------------------
+
+ * Main idea
+ Outbound policy: We configure the TBF on each Pod's interafce to limit the outbound rate, as well as configuring the HTB on VM eth0 to guarantee different traffic's bandwidth, priority and providing the bandwidth sharing.
+
+ Inbound policy: We configure the TBF on the OVS veth interafce connected each Pod to limit the inbound rate, as well as configuring the HTB on the Bridge to guarantee different traffic's bandwidth, priority and providing the bandwidth sharing for the traffics to different Pods.
+
+ * Details
+
+
+ * Limitation
