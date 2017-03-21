@@ -3,12 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	//"io/ioutil"
 	"github.com/coreos/etcd/client"
 	"github.com/docker/libkv"
 	"github.com/docker/libkv/store"
 	"github.com/docker/libkv/store/etcd"
 	"golang.org/x/net/context"
+	"io/ioutil"
 	"log"
 	"net"
 	"os/exec"
@@ -70,9 +70,10 @@ var hostIP net.IP
 
 func main() {
 
-	etcd_server := "127.0.0.1:4001"
+	//etcd_server := "127.0.0.1:4001"
 
-	load_pod_qos_policy(etcd_server)
+	//load_pod_qos_policy(etcd_server)
+	load_pod_qos_policy_json()
 
 }
 
@@ -186,6 +187,74 @@ func load_pod_qos_policy(etcd_server string) map[string]qos_para {
 			count++
 		}
 	}
+}
+
+func load_pod_qos_policy_json() {
+	var data qosInput
+
+	pod_info_map := map[string]pod_metadata{}
+	cid_pid_map := map[string]string{}
+
+	classid_pool = init_classid_pool(classid_max)
+
+	//get the IP address of this host
+	hostIP = get_intf_ipaddress(node_dev)
+	log.Println("The host IP is : " + string(hostIP))
+
+	// read the json file
+	file, err := ioutil.ReadFile(qos_json_file)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = json.Unmarshal(file, &data)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	pod_qos := load_pod_qos_local(data)
+	var count = 1
+
+	// Crash restore: when code crash and restarts, we restore the configuration by:
+	// "Add", "change", " " are seen as the "Add", while "delete" is still to be deleted
+	if count == 1 {
+		// firstly, delete all the configuration
+		pod_qos_delete_all := changeAction(pod_qos, 0)
+		log.Println("Change Action to Delete All", pod_qos_delete_all)
+		pod_info_map, cid_pid_map := get_pod_info_map(pod_qos_delete_all, pod_info_map, cid_pid_map)
+		set_pod_eth_outbound_bandwidth(pod_qos_delete_all, pod_info_map)
+		set_pod_veth_inbound_bandwidth(pod_qos_delete_all, pod_info_map)
+		set_br_inbound_bandwidth(br_int, pod_qos_delete_all, pod_info_map)
+		log.Println("after restore the config, the pod_info_map is", pod_info_map)
+		pod_info_map, cid_pid_map = delete_pod_info_map(pod_qos_delete_all, pod_info_map, cid_pid_map)
+		log.Println("Finally, the pod_info_map after delete all is", pod_info_map)
+
+		// reinit the class id pool
+		classid_pool = init_classid_pool(classid_max)
+		pod_qos = changeAction(pod_qos, 1)
+		log.Println("Change add, change null Action to add", pod_qos)
+	}
+
+	pod_info_map, cid_pid_map = get_pod_info_map(pod_qos, pod_info_map, cid_pid_map)
+	log.Println("Before device config, the pod_info_map is", pod_info_map)
+
+	//config pod outbound bandwidth tc qdisc on eth0 in pod
+	set_pod_eth_outbound_bandwidth(pod_qos, pod_info_map)
+
+	//config pod inbound bandwidth tc qdisc on veth outside
+	set_pod_veth_inbound_bandwidth(pod_qos, pod_info_map)
+
+	set_br_inbound_bandwidth(br_int, pod_qos, pod_info_map)
+
+	// start to config the Host
+	//Set_vm_outbound_bandwidth(node_dev, pod_qos, pod_info_map)
+
+	log.Println("after device config, the pod_info_map is", pod_info_map)
+	pod_info_map, cid_pid_map = delete_pod_info_map(pod_qos, pod_info_map, cid_pid_map)
+	log.Println("Finally, the pod_info_map is", pod_info_map)
+
+	count++
 }
 
 func init_classid_pool(classid_max int) []int {
