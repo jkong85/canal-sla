@@ -70,10 +70,12 @@ var hostIP net.IP
 
 func main() {
 
+	getBridgeName()
+	return
+
 	etcd_server := "127.0.0.1:4001"
 
 	load_pod_qos_policy(etcd_server)
-
 }
 
 func load_pod_qos_policy(etcd_server string) map[string]qos_para {
@@ -1166,6 +1168,30 @@ func get_veth_list() map[int]string {
 		//}
 	}
 	return result
+}
+
+//get interface and it's IP address on VM
+func getBridgeName() string {
+	br_intf := "br"
+	topoIntfNameMap := map[string]string{}
+	topoIntfNameMap["br"] = "br"
+	topoIntfNameMap["overlay_br_int"] = "overlay_br_int"
+
+	ifaces, err := net.Interfaces()
+
+	if err != nil {
+		log.Printf("Error when decode interface %s\n", err)
+	}
+
+	for _, i := range ifaces {
+		log.Printf(i.Name)
+		_, ok := topoIntfNameMap[i.Name]
+		if ok {
+			log.Printf("finally, we get %s\n", i.Name)
+			return br_intf
+		}
+	}
+	return br_intf
 }
 
 //get interface and it's IP address on VM

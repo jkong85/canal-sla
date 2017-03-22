@@ -196,7 +196,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	intf, err := net.InterfaceByName("ens3")
+	intf, err := net.InterfaceByName("br1")
 
 	if err != nil {
 		log.Fatal("Cannot find interface by name eth0")
