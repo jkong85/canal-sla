@@ -3,8 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	//"io/ioutil"
-	"github.com/bitly/go-simplejson"
+	Simplejson "github.com/bitly/go-simplejson"
 	"github.com/coreos/etcd/client"
 	"github.com/docker/libkv"
 	"github.com/docker/libkv/store"
@@ -16,6 +15,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	//"io/ioutil"
 )
 
 var pod_dev string = "eth0"
@@ -1182,7 +1182,7 @@ func getBridgeName(etcd_server string) (string, string) {
 	var providerRef string = ""
 	key_template := "/0/BBS/public/template/"
 	// read
-	key_controller = key_template + "controller_profile.json"
+	key_controller := key_template + "controller_profile.json"
 
 	etcd_proto := "http://" + etcd_server
 
@@ -1199,7 +1199,7 @@ func getBridgeName(etcd_server string) (string, string) {
 	kapi := client.NewKeysAPI(c)
 	// get "/0..../controller_profile.json" key's value
 	log.Print("Getting key value of " + key_controller)
-	resp, err = kapi.Get(context.Background(), key_controller, nil)
+	resp, err := kapi.Get(context.Background(), key_controller, nil)
 	if err != nil {
 		log.Fatal(err)
 	} else {
@@ -1207,33 +1207,33 @@ func getBridgeName(etcd_server string) (string, string) {
 		log.Printf("Get is done. Metadata is %q\n", resp)
 		log.Printf("%q key has %q value\n", resp.Node.Key, resp.Node.Value)
 		//err = json.Unmarshal([]byte(resp.Node.Value), &data)
-		js, err := NewJson([]byte(resp.Node.Value))
+		js, err := Simplejson.NewJson([]byte(resp.Node.Value))
 		// get the 'agent_profile' from the js
 		if err != nil {
 			log.Fatal(err)
 		} else {
-			agent_profile := js.Get("agent_profile")
+			agent_profile, _ := js.Get("agent_profile").String()
 			if agent_profile == "L2Direct_profile.json" || agent_profile == "overlay_profile.json" {
 				key_deployRef := key_template + agent_profile
 				resp, err = kapi.Get(context.Background(), key_deployRef, nil)
-				js, err = NewJson([]byte(resp.Node.Value))
+				js, err = Simplejson.NewJson([]byte(resp.Node.Value))
 				if err != nil {
 					log.Fatal(err)
 				} else {
-					deployRef = js.Get("deployRef")
-					providerRef = js.Get("providerRef")
+					deployRef, _ = js.Get("deployRef").String()
+					providerRef, _ = js.Get("providerRef").String()
 
 					// get the VM's interface from provider.json
 					key_provider := key_template + providerRef
 					resp, _ = kapi.Get(context.Background(), key_provider, nil)
-					js, _ = NewJson([]byte(resp.Node.Value))
-					node_dev = js.Get("default")
+					js, _ = Simplejson.NewJson([]byte(resp.Node.Value))
+					node_dev, _ = js.Get("default").String()
 
 					// then get the br-int from *.json
 					key_deployRef := key_template + deployRef
 					resp, _ = kapi.Get(context.Background(), key_deployRef, nil)
-					js, _ = NewJson([]byte(resp.Node.Value))
-					br_int = js.Get("main_network").Get("node").Get("name")
+					js, _ = Simplejson.NewJson([]byte(resp.Node.Value))
+					br_int, _ = js.Get("main_network").Get("node").Get("name").String()
 				}
 			} else {
 				log.Println("Error! No such network topology!")
