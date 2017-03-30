@@ -1212,8 +1212,11 @@ func getBridgeName(etcd_server string) (string, string) {
 		if err != nil {
 			log.Fatal(err)
 		} else {
-			agent_profile, _ := js.Get("agent_profile").String()
-			if agent_profile == "L2Direct_profile.json" || agent_profile == "overlay_profile.json" {
+			agent_profile, err_agent := js.Get("agent_profile").String()
+			if err_agent != nil {
+				log.Println("Error to read the agent_profile!")
+			} else { //
+				//if agent_profile == "L2Direct_profile.json" || agent_profile == "overlay_profile.json" {
 				key_deployRef := key_template + agent_profile
 				resp, err = kapi.Get(context.Background(), key_deployRef, nil)
 				js, err = Simplejson.NewJson([]byte(resp.Node.Value))
@@ -1235,8 +1238,6 @@ func getBridgeName(etcd_server string) (string, string) {
 					js, _ = Simplejson.NewJson([]byte(resp.Node.Value))
 					br_int, _ = js.Get("main_network").Get("node").Get("name").String()
 				}
-			} else {
-				log.Println("Error! No such network topology!")
 			}
 		}
 	}
