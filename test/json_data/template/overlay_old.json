@@ -1,0 +1,164 @@
+{
+  "access_interface": {
+    "node": [
+      {
+        "type": "paired_if",
+        "name": "access_intf_#containerID",
+        "per_container": true,
+		"CapRequire": [
+              "NameSpaceAccessCap"
+          ],
+        "link_point": [
+          {
+            "type": "l2_if",
+            "name": "veth0_#containerID",
+            "LinkTo": "netNS_#containerID"
+
+          },
+          {
+            "type": "l2_if",
+            "name": "veth1_#containerID",
+            "LinkTo": "main_network.overlay_br_int.integration_port_#containerID"
+          }
+        ]
+      }
+    ]
+  },
+  "main_network": {
+    "node": [
+      {
+        "type": "l2_dev",
+        "name": "overlay_br_int",
+		"IP": "Dynamic",
+        "link_point": [
+          {
+            "type": "l2_port",
+            "per_container": true,
+            "name": "integration_port_#containerID"
+          },
+          {
+            "type": "l2_port",
+            "name": "gwAttach_port"
+          },
+          {
+            "type": "l2_port",
+            "name": "intBr2tunBr_Port"
+          }
+        ]
+      },
+      {
+        "type": "paired_if",
+        "name": "PairedPortInt2Tun",
+        "link_point": [
+          {
+            "type": "l2_if",
+            "name": "PairedPortToInt_link",
+            "LinkTo": "main_network.overlay_br_int.intBr2tunBr_Port"
+          },
+          {
+            "type": "l2_if",
+            "name": "PairedPortToTun_link",
+            "LinkTo": "main_network.overlay_br_tun.tunBr2intBr_port"
+          }
+        ]
+      },
+      {
+        "type": "l2_dev",
+        "name": "overlay_br_tun",
+        "CapRequire": [
+          "VxLANAttachCap"
+        ],
+        "link_point": [
+          {
+            "type": "l2_port",
+            "name": "tunBr2intBr_port"
+          },
+          {
+            "type": "l2_port",
+            "name": "out2Tun_Port"
+          }
+        ]
+      },
+      {
+        "type": "tunnel_vxlan",
+        "name": "vxlan_tun_#remoteHostIP",
+        "per_remoteHost": true,
+        "extend_setting": {
+          "TunnelType": "DynamicP2P",
+          "TunnelID": "100",
+          "ArpOpenflowSet": true,
+          "IFace": {
+            "physical": true,
+            "name": "provider_network_if",
+            "remoteIP": "#remoteHostIP"
+          }
+        },
+        "link_point": [
+          {
+            "type": "l2_if",
+            "name": "super.name",
+            "LinkTo": "main_network.overlay_br_tun.out2Tun_Port"
+          }
+        ]
+      },
+      {
+        "type": "l3_dev",
+        "name": "overlay_distributed_gw",
+		"extend_setting": {
+	      "isGateway": true,
+	      "isMasq": true
+		},
+        "link_point": [
+          {
+            "type": "l3_port",
+            "name": "overlay_gw_port",
+			"LinkTo": "main_network.overlay_br_int.gwAttach_port"
+          }
+        ]
+      }
+    ]
+  },
+  "actions": {
+    "init": null,
+    "exit": null,
+    "construct_main_network": null,
+    "destroy_main_network": null,
+    "local_host_join": null,
+    "local_host_leave": null,
+    "local_container_join": {
+      "FunctionMap": [
+        {
+          "resource": "access_interface.access_intf_#containerID.eth1",
+          "function": "NameSpaceAccessCap.ConnectionSetup"
+        }
+      ]
+    },
+    "local_container_leave": {
+      "FunctionMap": [
+        {
+          "resource": "access_interface.access_intf_#containerID.eth1",
+          "function": "NameSpaceAccessCap.ConnectionDestroy"
+        }
+      ]
+    },
+    "remote_host_join": {
+      "FunctionMap": [
+        {
+          "resource": "main_network.vxlan_tun_#remoteHostIP",
+          "function": "Create"
+        }
+      ]
+    },
+    "remote_host_leave": {
+      "FunctionMap": [
+        {
+          "resource": "main_network.vxlan_tun_#remoteHostIP",
+          "function": "Destroy"
+        }
+      ]
+    },
+    "remote_container_join": null,
+    "remote_container_leave": null,
+    "link": null
+  }
+}

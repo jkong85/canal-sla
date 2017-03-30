@@ -1,0 +1,87 @@
+{
+  "access_interface": {
+    "node": [
+      {
+        "type": "paired_if",
+        "name": "access_intf_#containerID",
+        "per_container": true,
+		"CapRequire": [
+              "NameSpaceAccessCap"
+            ],
+        "link_point": [
+          {
+            "type": "l2_if",
+            "name": "veth0_#containerID",
+            "LinkTo": "netNS_#containerID"
+
+          },
+          {
+            "type": "l2_if",
+            "name": "veth1_#containerID",
+            "LinkTo":"main_network.br.up_link_#containerID"
+          }
+        ]
+      }
+    ]
+  },
+  "main_network": {
+    "node": [
+      {
+        "type": "l2_dev",
+        "name": "br",
+		"CapRequire": [
+          "SecureGroupCap" 
+        ],
+		"IP": "Dynamic",
+        "link_point": [
+          {
+            "type": "l2_port",
+            "per_container": true,
+            "name": "up_link_#containerID"
+          },
+          {
+            "type": "l2_port",
+            "name": "down_link"
+          }
+        ]
+      },
+      {
+        "type": "l2_if",
+        "physical": true,
+        "name": "provider_network_if",
+        "link_point": [
+		  {
+            "type": "l2_if",
+            "name": "super.name",
+            "LinkTo": "main_network.br.down_link"
+          }
+	    ]
+      }
+    ]
+  },
+  "actions": {
+    "init": null,
+    "exit": null,
+    "construct_main_network": null,
+    "destroy_main_network": null,
+    "local_host_join": null,
+    "local_host_leave": null,
+    "local_container_join": {
+      "FunctionMap": [
+       { "resource":"access_interface.access_intf.eth1",
+         "function":"NameSpaceAccessCap.ConnectionSetup"}
+      ]
+    },
+    "local_container_leave": {
+    "FunctionMap": [
+       { "resource":"access_interface.access_intf.eth1",
+         "function":"NameSpaceAccessCap.ConnectionDestroy"}
+      ]
+    },
+    "remote_host_join": null,
+    "remote_host_leave": null,
+    "remote_container_join": null,
+    "remote_container_leave": null,
+    "link": null
+  }
+}

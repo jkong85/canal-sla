@@ -1,0 +1,86 @@
+{
+  "access_interface": {
+    "node": [
+      {
+        "type": "paired_if",
+        "name": "access_intf_#containerID",
+        "per_container": true,
+		"CapRequire": [
+              "NameSpaceAccessCap"
+          ],
+        "link_point": [
+          {
+            "type": "l2_if",
+            "name": "veth0_#containerID",
+            "LinkTo": "netNS_#containerID"
+
+          },
+          {
+            "type": "l2_if",
+            "name": "veth1_#containerID",
+            "LinkTo": "main_network.overlay_br_int.integration_port_#containerID"
+          }
+        ]
+      }
+    ]
+  },
+  "main_network": {
+    "node": [
+      {
+        "type": "l2_dev",
+        "name": "overlay_br_int",
+		"IP": "Dynamic",
+        "link_point": [
+          {
+            "type": "l2_port",
+            "per_container": true,
+            "name": "integration_port_#containerID"
+          }
+        ]
+      }
+    ]
+  },
+  "actions": {
+    "init": null,
+    "exit": null,
+    "construct_main_network": null,
+    "destroy_main_network": null,
+    "local_host_join": null,
+    "local_host_leave": null,
+    "local_container_join": {
+      "FunctionMap": [
+        {
+          "resource": "access_interface.access_intf_#containerID.eth1",
+          "function": "NameSpaceAccessCap.ConnectionSetup"
+        }
+      ]
+    },
+    "local_container_leave": {
+      "FunctionMap": [
+        {
+          "resource": "access_interface.access_intf_#containerID.eth1",
+          "function": "NameSpaceAccessCap.ConnectionDestroy"
+        }
+      ]
+    },
+    "remote_host_join": {
+      "FunctionMap": [
+        {
+          "resource": "main_network.vxlan_tun_#remoteHostIP",
+          "function": "Create"
+        }
+      ]
+    },
+    "remote_host_leave": {
+      "FunctionMap": [
+        {
+          "resource": "main_network.vxlan_tun_#remoteHostIP",
+          "function": "Destroy"
+        }
+      ]
+    },
+    "remote_container_join": null,
+    "remote_container_leave": null,
+    "link": null
+  }
+}

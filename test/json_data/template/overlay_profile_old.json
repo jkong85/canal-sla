@@ -1,0 +1,17 @@
+{
+  "deployRef": "overlay.json",
+  "providerRef": "provider.json",
+  "provider_network": "default",
+  "networkname": "default",
+  "ip_mgr": {
+    "name": "canal_ip_mgr",
+    "subnet": ["192.168.0.0/16"],
+    "type": "global",
+    "ipm_interfaces": {
+      "alloc_host_ip_pool": null,
+      "release_host_ip_pool": null,
+      "alloc_container_ip": null,
+      "release_container_ip": null
+    }
+  }
+}

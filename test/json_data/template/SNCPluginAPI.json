@@ -1,0 +1,28 @@
+{
+  "CommonForAll": {
+    "CreateSelf": "Create",
+    "DestroySelf": "Destroy",
+    "UpdateSelf": "Update",
+    "QuerySelfInfo": "QueryCommonInfo",
+
+  },
+  "APIFoDevice": {
+    "ConnectionSetup": "ConnectToInterface",
+    "ConnectionDestroy": "LeaveFromInterface"
+  },
+  "APIFoInterface": {
+    "NULL": null
+  },
+  "NameSpaceAccessCap": {
+    "ConnectionSetup": "ConnectToNamespace",
+    "ConnectionDestroy": "LeaveFromNamespace"
+  },
+  "APIForQosAndMonitorCap": {
+    "QosCapQuery": "QoSQuery",
+    "MonitorCapQuery": "MonitorQuery",
+    "QosSettingControl": "QoSControl",
+    "QosSettingQuery": "QoSQuery",
+    "MonitorSettingControl": "MonitorControl",
+    "MonitorSettingQuery": "MonitorQuery"
+  }
+}

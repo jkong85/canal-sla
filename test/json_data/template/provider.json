@@ -1,0 +1,41 @@
+{
+  "default": "enp0s9",
+  "host_list": [
+    {
+      "firstMAC": "00:00:00:00:00:00",
+	  "provider": [
+		{
+		  "name" : "provider_network_if",
+		  "eth" : "eth1"
+		}
+	   ]
+    },
+    {
+	  "firstMAC": "00:00:00:00:00:01",
+	  "provider": [
+		{
+		  "name" : "provider_network_if",
+		  "eth" : "eth1"
+		}
+	   ]
+    },
+    {
+	  "firstMAC": "00:00:00:00:00:02",
+	  "provider": [
+		{
+		  "name" : "provider_network_if",
+		  "eth" : "eth2"
+		}
+	   ]
+    },
+    {
+	  "firstMAC": "00:00:00:00:00:03",
+	  "provider": [
+		{
+		  "name" : "provider_network_if",
+		  "eth" : "eth3"
+		}
+	   ]
+    }
+  ]
+}

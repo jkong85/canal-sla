@@ -1,0 +1,172 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ContainerBW	test/etcd_config/1_1_add.go	/^type ContainerBW struct {$/;"	t
+ContainerBW	test/etcd_config/1_2_del.go	/^type ContainerBW struct {$/;"	t
+ContainerBW	test/etcd_config/2_1_add.go	/^type ContainerBW struct {$/;"	t
+ContainerBW	test/etcd_config/2_2_del.go	/^type ContainerBW struct {$/;"	t
+ContainerBW	test/etcd_config/3_1_add.go	/^type ContainerBW struct {$/;"	t
+ContainerBW	test/etcd_config/3_2_del.go	/^type ContainerBW struct {$/;"	t
+ContainerBW	test/etcd_config/add_all.go	/^type ContainerBW struct {$/;"	t
+ContainerBW	test/etcd_config/all_traffic.go	/^type ContainerBW struct {$/;"	t
+ContainerBW	test/etcd_config/del_all.go	/^type ContainerBW struct {$/;"	t
+ContainerBW	test/etcd_config/test.go	/^type ContainerBW struct {$/;"	t
+ContainerBW	test/etcd_config/test_change.go	/^type ContainerBW struct {$/;"	t
+ContainerBW	test/etcd_config/test_change_back.go	/^type ContainerBW struct {$/;"	t
+ContainerBW	test/etcd_config/test_change_rate.go	/^type ContainerBW struct {$/;"	t
+ContainerBW	test/etcd_config/test_del.go	/^type ContainerBW struct {$/;"	t
+ContainerBW	test/etcd_config/test_del_all.go	/^type ContainerBW struct {$/;"	t
+ContainerBW	test/etcd_config/yz/bwctl.go	/^type ContainerBW struct {$/;"	t
+ContainerBW	test/etcd_config/yz/bwctl2.go	/^type ContainerBW struct {$/;"	t
+ContainerBW	test/etcd_config/yz/bwctl3.go	/^type ContainerBW struct {$/;"	t
+add_port	test/testbed/ovs_testbed/ovs-docker	/^add_port () {$/;"	f
+all_ip_traffic	pod_qos.go	/^	all_ip_traffic                 = "0.0.0.0\/0"$/;"	c
+br_int	pod_qos.go	/^	br_int   = "vxbr" \/\/"br-int"$/;"	c
+changeAction	pod_qos.go	/^func changeAction(pod_qos_original map[string]qos_para, actionType int) map[string]qos_para {$/;"	f
+check	test/etcd_config/1_1_add.go	/^func check(e error) {$/;"	f
+check	test/etcd_config/1_2_del.go	/^func check(e error) {$/;"	f
+check	test/etcd_config/2_1_add.go	/^func check(e error) {$/;"	f
+check	test/etcd_config/2_2_del.go	/^func check(e error) {$/;"	f
+check	test/etcd_config/3_1_add.go	/^func check(e error) {$/;"	f
+check	test/etcd_config/3_2_del.go	/^func check(e error) {$/;"	f
+check	test/etcd_config/add_all.go	/^func check(e error) {$/;"	f
+check	test/etcd_config/all_traffic.go	/^func check(e error) {$/;"	f
+check	test/etcd_config/del_all.go	/^func check(e error) {$/;"	f
+check	test/etcd_config/test.go	/^func check(e error) {$/;"	f
+check	test/etcd_config/test_change.go	/^func check(e error) {$/;"	f
+check	test/etcd_config/test_change_back.go	/^func check(e error) {$/;"	f
+check	test/etcd_config/test_change_rate.go	/^func check(e error) {$/;"	f
+check	test/etcd_config/test_del.go	/^func check(e error) {$/;"	f
+check	test/etcd_config/test_del_all.go	/^func check(e error) {$/;"	f
+check	test/etcd_config/yz/bwctl.go	/^func check(e error) {$/;"	f
+check	test/etcd_config/yz/bwctl2.go	/^func check(e error) {$/;"	f
+check	test/etcd_config/yz/bwctl3.go	/^func check(e error) {$/;"	f
+classid_max	pod_qos.go	/^	classid_max                    = 120$/;"	c
+classid_pool	pod_qos.go	/^var classid_pool []int$/;"	v
+clear_containers	test/testbed/kube_testbed/kube_testbed.go	/^func clear_containers() {$/;"	f
+clear_containers	test/testbed/ovs_testbed/ovs-testbed.go	/^func clear_containers() {$/;"	f
+clear_ovs_bridge	test/testbed/ovs_testbed/ovs-testbed.go	/^func clear_ovs_bridge() {$/;"	f
+clear_vm_config	test/testbed/kube_testbed/kube_testbed.go	/^func clear_vm_config(dev string) {$/;"	f
+clear_vm_config	test/testbed/ovs_testbed/ovs-testbed.go	/^func clear_vm_config(dev string) {$/;"	f
+container_info	pod_qos.go	/^type container_info struct {$/;"	t
+create_containers	test/testbed/kube_testbed/kube_testbed.go	/^func create_containers() {$/;"	f
+create_containers	test/testbed/ovs_testbed/ovs-testbed.go	/^func create_containers() {$/;"	f
+create_netns_link	test/testbed/ovs_testbed/ovs-docker	/^create_netns_link () {$/;"	f
+create_ovs_bridge	test/testbed/ovs_testbed/ovs-testbed.go	/^func create_ovs_bridge() {$/;"	f
+create_vxlan_network	test/testbed/ovs_testbed/ovs-testbed.go	/^func create_vxlan_network() {$/;"	f
+dec_classid_pool	pod_qos.go	/^func dec_classid_pool(classid_pool []int) []int {$/;"	f
+del_port	test/testbed/ovs_testbed/ovs-docker	/^del_port () {$/;"	f
+del_ports	test/testbed/ovs_testbed/ovs-docker	/^del_ports () {$/;"	f
+delete_netns_link	test/testbed/ovs_testbed/ovs-docker	/^delete_netns_link () {$/;"	f
+delete_pod_info_map	pod_qos.go	/^func delete_pod_info_map(pod_qos map[string]qos_para,$/;"	f
+exe_cmd	pod_qos.go	/^func exe_cmd(cmd string, args []string) string {$/;"	f
+exe_cmd	test/testbed/kube_testbed/kube_testbed.go	/^func exe_cmd(cmd string, args []string) string {$/;"	f
+exe_cmd	test/testbed/ovs_testbed/ovs-testbed.go	/^func exe_cmd(cmd string, args []string) string {$/;"	f
+exe_cmd_full	pod_qos.go	/^func exe_cmd_full(cmd string) {$/;"	f
+exe_cmd_full	test/testbed/kube_testbed/kube_testbed.go	/^func exe_cmd_full(cmd string) {$/;"	f
+exe_cmd_full	test/testbed/ovs_testbed/ovs-testbed.go	/^func exe_cmd_full(cmd string) {$/;"	f
+exe_cmd_full_2	test/testbed/kube_testbed/kube_testbed.go	/^func exe_cmd_full_2(cmd string) string {$/;"	f
+free_classid	pod_qos.go	/^func free_classid(classid int) []int {$/;"	f
+generate_bytecode	pod_qos.go	/^func generate_bytecode(ip string) string {$/;"	f
+getBridgeName	pod_qos.go	/^func getBridgeName() string {$/;"	f
+get_classid	pod_qos.go	/^func get_classid(classid_pool []int) int {$/;"	f
+get_intf_ipaddress	pod_qos.go	/^func get_intf_ipaddress(intf_name string) net.IP {$/;"	f
+get_pod_info_map	pod_qos.go	/^func get_pod_info_map(pod_qos map[string]qos_para,$/;"	f
+get_port_for_container_interface	test/testbed/ovs_testbed/ovs-docker	/^get_port_for_container_interface () {$/;"	f
+get_veth_list	pod_qos.go	/^func get_veth_list() map[int]string {$/;"	f
+hostIP	pod_qos.go	/^var hostIP net.IP$/;"	v
+htb_default_classid	pod_qos.go	/^	htb_default_classid            = "8001"$/;"	c
+htb_high_prio	pod_qos.go	/^	htb_high_prio                  = "0"$/;"	c
+htb_low_prio	pod_qos.go	/^	htb_low_prio                   = "7"$/;"	c
+htb_mid_prio	pod_qos.go	/^	htb_mid_prio                   = "5"$/;"	c
+htb_root_classid	pod_qos.go	/^	htb_root_classid               = "1:1"$/;"	c
+htb_root_handle	pod_qos.go	/^	htb_root_handle                = "1:"$/;"	c
+image	test/testbed/kube_testbed/kube_testbed.go	/^var image string$/;"	v
+image	test/testbed/ovs_testbed/ovs-testbed.go	/^var image string$/;"	v
+init_classid_pool	pod_qos.go	/^func init_classid_pool(classid_max int) []int {$/;"	f
+ip_interval	test/testbed/kube_testbed/kube_testbed.go	/^var ip_interval int$/;"	v
+ip_interval	test/testbed/ovs_testbed/ovs-testbed.go	/^var ip_interval int$/;"	v
+ip_net	test/testbed/kube_testbed/kube_testbed.go	/^var ip_net string$/;"	v
+ip_net	test/testbed/ovs_testbed/ovs-testbed.go	/^	ip_net = "10.1.2." \/\/ ip address of container$/;"	c
+ip_prefix	test/testbed/kube_testbed/kube_testbed.go	/^var ip_prefix string$/;"	v
+ip_prefix	test/testbed/ovs_testbed/ovs-testbed.go	/^var ip_prefix string$/;"	v
+ip_vxlan_remote	test/testbed/ovs_testbed/ovs-testbed.go	/^var ip_vxlan_remote string$/;"	v
+load_pod_qos_local	pod_qos.go	/^func load_pod_qos_local(data qosInput) map[string]qos_para {$/;"	f
+load_pod_qos_policy	pod_qos.go	/^func load_pod_qos_policy(etcd_server string) map[string]qos_para {$/;"	f
+main	pod_qos.go	/^func main() {$/;"	f
+main	pod_qos.go	/^package main$/;"	p
+main	test/etcd_config/1_1_add.go	/^func main() {$/;"	f
+main	test/etcd_config/1_1_add.go	/^package main$/;"	p
+main	test/etcd_config/1_2_del.go	/^func main() {$/;"	f
+main	test/etcd_config/1_2_del.go	/^package main$/;"	p
+main	test/etcd_config/2_1_add.go	/^func main() {$/;"	f
+main	test/etcd_config/2_1_add.go	/^package main$/;"	p
+main	test/etcd_config/2_2_del.go	/^func main() {$/;"	f
+main	test/etcd_config/2_2_del.go	/^package main$/;"	p
+main	test/etcd_config/3_1_add.go	/^func main() {$/;"	f
+main	test/etcd_config/3_1_add.go	/^package main$/;"	p
+main	test/etcd_config/3_2_del.go	/^func main() {$/;"	f
+main	test/etcd_config/3_2_del.go	/^package main$/;"	p
+main	test/etcd_config/add_all.go	/^func main() {$/;"	f
+main	test/etcd_config/add_all.go	/^package main$/;"	p
+main	test/etcd_config/all_traffic.go	/^func main() {$/;"	f
+main	test/etcd_config/all_traffic.go	/^package main$/;"	p
+main	test/etcd_config/del_all.go	/^func main() {$/;"	f
+main	test/etcd_config/del_all.go	/^package main$/;"	p
+main	test/etcd_config/test.go	/^func main() {$/;"	f
+main	test/etcd_config/test.go	/^package main$/;"	p
+main	test/etcd_config/test_change.go	/^func main() {$/;"	f
+main	test/etcd_config/test_change.go	/^package main$/;"	p
+main	test/etcd_config/test_change_back.go	/^func main() {$/;"	f
+main	test/etcd_config/test_change_back.go	/^package main$/;"	p
+main	test/etcd_config/test_change_rate.go	/^func main() {$/;"	f
+main	test/etcd_config/test_change_rate.go	/^package main$/;"	p
+main	test/etcd_config/test_del.go	/^func main() {$/;"	f
+main	test/etcd_config/test_del.go	/^package main$/;"	p
+main	test/etcd_config/test_del_all.go	/^func main() {$/;"	f
+main	test/etcd_config/test_del_all.go	/^package main$/;"	p
+main	test/etcd_config/yz/bwctl.go	/^func main() {$/;"	f
+main	test/etcd_config/yz/bwctl.go	/^package main$/;"	p
+main	test/etcd_config/yz/bwctl2.go	/^func main() {$/;"	f
+main	test/etcd_config/yz/bwctl2.go	/^package main$/;"	p
+main	test/etcd_config/yz/bwctl3.go	/^func main() {$/;"	f
+main	test/etcd_config/yz/bwctl3.go	/^package main$/;"	p
+main	test/testbed/kube_testbed/kube_testbed.go	/^func main() {$/;"	f
+main	test/testbed/kube_testbed/kube_testbed.go	/^package main$/;"	p
+main	test/testbed/ovs_testbed/ovs-testbed.go	/^func main() {$/;"	f
+main	test/testbed/ovs_testbed/ovs-testbed.go	/^package main$/;"	p
+node_default_inbound_bandwidth	pod_qos.go	/^	node_default_inbound_bandwidth = "1000" \/\/1000mbps$/;"	c
+node_dev	pod_qos.go	/^	node_dev = "ens3" \/\/"eth0"$/;"	c
+number_container	test/testbed/kube_testbed/kube_testbed.go	/^var number_container int$/;"	v
+number_container	test/testbed/ovs_testbed/ovs-testbed.go	/^var number_container int$/;"	v
+ovs_vsctl	test/testbed/ovs_testbed/ovs-docker	/^ovs_vsctl () {$/;"	f
+parse_qos_info	pod_qos.go	/^func parse_qos_info(etcd_server string, key string) map[string]qos_para {$/;"	f
+pod_default_inbound_max	pod_qos.go	/^	pod_default_inbound_max        = "500"  \/\/100mbps$/;"	c
+pod_default_inbound_min	pod_qos.go	/^	pod_default_inbound_min        = "100"  \/\/10mbps$/;"	c
+pod_dev	pod_qos.go	/^	pod_dev  = "eth0"$/;"	c
+pod_metadata	pod_qos.go	/^type pod_metadata struct {$/;"	t
+qosInput	pod_qos.go	/^type qosInput []map[string]string$/;"	t
+qos_json_file	pod_qos.go	/^	qos_json_file                  = "qos.json"$/;"	c
+qos_para	pod_qos.go	/^type qos_para struct {$/;"	t
+search_path	test/testbed/ovs_testbed/ovs-docker	/^search_path () {$/;"	f
+set_br_inbound_bandwidth	pod_qos.go	/^func set_br_inbound_bandwidth(br_name string, pod_qos map[string]qos_para, pod_info_map map[string]pod_metadata) {$/;"	f
+set_container	test/testbed/kube_testbed/kube_testbed.go	/^func set_container() {$/;"	f
+set_pod_br_inbound_bandwidth_class_and_filter	pod_qos.go	/^func set_pod_br_inbound_bandwidth_class_and_filter(br_name string, pod_qos map[string]qos_para,$/;"	f
+set_pod_eth_outbound_bandwidth	pod_qos.go	/^func set_pod_eth_outbound_bandwidth(pod_qos map[string]qos_para, pod_info_map map[string]pod_metadata) {$/;"	f
+set_pod_veth_inbound_bandwidth	pod_qos.go	/^func set_pod_veth_inbound_bandwidth(pod_qos map[string]qos_para, pod_info_map map[string]pod_metadata) {$/;"	f
+set_vlan	test/testbed/ovs_testbed/ovs-docker	/^set_vlan () {$/;"	f
+show_tc_class	pod_qos.go	/^func show_tc_class(dev_name string) {$/;"	f
+show_tc_class_in_pod	pod_qos.go	/^func show_tc_class_in_pod(container_pid string, dev_name string) {$/;"	f
+show_tc_class_statistics	pod_qos.go	/^func show_tc_class_statistics(dev_name string) {$/;"	f
+show_tc_class_statistics_in_pod	pod_qos.go	/^func show_tc_class_statistics_in_pod(container_pid string, dev_name string) {$/;"	f
+show_tc_filter	pod_qos.go	/^func show_tc_filter(dev_name string, handle string) {$/;"	f
+show_tc_qdisc	pod_qos.go	/^func show_tc_qdisc(dev_name string) {$/;"	f
+show_tc_qdisc_in_pod	pod_qos.go	/^func show_tc_qdisc_in_pod(container_pid string, dev_name string) {$/;"	f
+show_tc_qdisc_statistics	pod_qos.go	/^func show_tc_qdisc_statistics(dev_name string) {$/;"	f
+show_tc_qdisc_statistics_in_pod	pod_qos.go	/^func show_tc_qdisc_statistics_in_pod(container_pid string, dev_name string) {$/;"	f
+start_ip	test/testbed/kube_testbed/kube_testbed.go	/^var start_ip int$/;"	v
+start_ip	test/testbed/ovs_testbed/ovs-testbed.go	/^var start_ip int$/;"	v
+usage	test/testbed/ovs_testbed/ovs-docker	/^usage() {$/;"	f
