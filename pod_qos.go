@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	//"io/ioutil"
+	"github.com/bitly/go-simplejson"
 	"github.com/coreos/etcd/client"
 	"github.com/docker/libkv"
 	"github.com/docker/libkv/store"
@@ -17,11 +18,14 @@ import (
 	"time"
 )
 
+var pod_dev string = "eth0"
+var node_dev string = "ens3" //"eth0"
+var br_int string = "br_int" //"br-int"
+
 const (
-	pod_dev  = "eth0"
-	node_dev = "ens3" //"eth0"
-	br_int   = "vxbr" //"br-int"
-	//br_int                         = "vxlan_sys_4789" //"br-int"
+	//pod_dev  = "eth0"
+	//node_dev = "ens3" //"eth0"
+	//br_int   = "vxbr" //"br-int"
 	htb_default_classid            = "8001"
 	htb_root_handle                = "1:"
 	htb_root_classid               = "1:1"
@@ -69,11 +73,12 @@ var classid_pool []int
 var hostIP net.IP
 
 func main() {
-
-	getBridgeName()
-	return
-
 	etcd_server := "127.0.0.1:4001"
+
+	node_dev, br_int = getBridgeName(etcd_server)
+	log.Println("VM's interface is: " + node_dev)
+	log.Println("bridge's name is: " + br_int)
+	return
 
 	load_pod_qos_policy(etcd_server)
 }
@@ -1170,28 +1175,72 @@ func get_veth_list() map[int]string {
 	return result
 }
 
-//get interface and it's IP address on VM
-func getBridgeName() string {
-	br_intf := "br"
-	topoIntfNameMap := map[string]string{}
-	topoIntfNameMap["br"] = "br"
-	topoIntfNameMap["overlay_br_int"] = "overlay_br_int"
+//get the topology, including the VM's interface, Bridge interface
+func getBridgeName(etcd_server string) (string, string) {
+	const controller_Ref string = "controller_profile.json"
+	var deployRef string = ""
+	var providerRef string = ""
+	key_template := "/0/BBS/public/template/"
+	// read
+	key_controller = key_template + "controller_profile.json"
 
-	ifaces, err := net.Interfaces()
+	etcd_proto := "http://" + etcd_server
 
-	if err != nil {
-		log.Printf("Error when decode interface %s\n", err)
+	cfg := client.Config{
+		Endpoints: []string{etcd_proto},
+		Transport: client.DefaultTransport,
+		// set timeout per request to fail fast when the target endpoint is unavailable
+		HeaderTimeoutPerRequest: time.Second,
 	}
+	c, err := client.New(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+	kapi := client.NewKeysAPI(c)
+	// get "/0..../controller_profile.json" key's value
+	log.Print("Getting key value of " + key_controller)
+	resp, err = kapi.Get(context.Background(), key_controller, nil)
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		// print common key info and print value
+		log.Printf("Get is done. Metadata is %q\n", resp)
+		log.Printf("%q key has %q value\n", resp.Node.Key, resp.Node.Value)
+		//err = json.Unmarshal([]byte(resp.Node.Value), &data)
+		js, err := NewJson([]byte(resp.Node.Value))
+		// get the 'agent_profile' from the js
+		if err != nil {
+			log.Fatal(err)
+		} else {
+			agent_profile := js.Get("agent_profile")
+			if agent_profile == "L2Direct_profile.json" || agent_profile == "overlay_profile.json" {
+				key_deployRef := key_template + agent_profile
+				resp, err = kapi.Get(context.Background(), key_deployRef, nil)
+				js, err = NewJson([]byte(resp.Node.Value))
+				if err != nil {
+					log.Fatal(err)
+				} else {
+					deployRef = js.Get("deployRef")
+					providerRef = js.Get("providerRef")
 
-	for _, i := range ifaces {
-		log.Printf(i.Name)
-		_, ok := topoIntfNameMap[i.Name]
-		if ok {
-			log.Printf("finally, we get %s\n", i.Name)
-			return br_intf
+					// get the VM's interface from provider.json
+					key_provider := key_template + providerRef
+					resp, _ = kapi.Get(context.Background(), key_provider, nil)
+					js, _ = NewJson([]byte(resp.Node.Value))
+					node_dev = js.Get("default")
+
+					// then get the br-int from *.json
+					key_deployRef := key_template + deployRef
+					resp, _ = kapi.Get(context.Background(), key_deployRef, nil)
+					js, _ = NewJson([]byte(resp.Node.Value))
+					br_int = js.Get("main_network").Get("node").Get("name")
+				}
+			} else {
+				log.Println("Error! No such network topology!")
+			}
 		}
 	}
-	return br_intf
+	return node_dev, br_int
 }
 
 //get interface and it's IP address on VM

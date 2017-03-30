@@ -1,5 +1,5 @@
 {
-  "default": "enp0s9",
+  "default": "enp1s9",
   "host_list": [
     {
       "firstMAC": "00:00:00:00:00:00",
